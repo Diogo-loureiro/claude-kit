@@ -65,7 +65,14 @@ stop() {
     step "ruff format" py ruff format --check -q .
     step "ruff lint" py ruff check -q .
     if grep -q '^\[tool.mypy\]' pyproject.toml; then step "mypy" py mypy; fi
-    step "pytest" py pytest -x -q
+    # stop: only tests affected by the change (pytest-testmon; the first run builds its map).
+    # ci: the whole suite.
+    if [ "$mode" = stop ] && py python -c 'import testmon' 2>/dev/null; then
+      # forceselect: keep selecting even when addopts carries -m (e.g. -m "not slow").
+      step "pytest (affected)" py pytest -x -q --testmon --testmon-forceselect
+    else
+      step "pytest" py pytest -x -q
+    fi
   fi
   if is_ts; then
     step "biome" js biome ci .
