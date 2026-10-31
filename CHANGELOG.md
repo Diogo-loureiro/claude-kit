@@ -4,7 +4,7 @@
 - `remoteControlAtStartup: true` in global settings: every session is reachable from the Claude mobile app.
 - `cloud/setup.sh`: cloud environment setup script that installs the global CLAUDE.md and skills in cloud sessions.
 
-## Unreleased (template)
+## v0.1.4 (2026-10-31)
 - Stop hook runs only the tests affected by the change (pytest-testmon, added to py dev deps);
   `scripts/check ci` still runs the whole suite (#1). Existing py projects: `uv add --dev pytest-testmon`.
 - ruff.toml: no fixed `target-version` (inferred from `requires-python`, so 3.11 projects don't get
