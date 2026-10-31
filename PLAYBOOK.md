@@ -10,7 +10,10 @@ automáticas decidem se está pronto.** Você não revisa código; revisa inten�
 3. O agente trabalha. A cada edição o arquivo é formatado; ao final do turno o `Stop hook`
    roda `scripts/check stop` e não o deixa parar enquanto algo falha.
 4. `/ship` → checks completos, revisão em contexto novo, commit e PR com evidência.
-5. O CI roda os mesmos checks + segredos + gates. Você olha **o resumo do PR**, não o código, e faz merge.
+5. O CI roda os mesmos checks + segredos + gates. Você olha **o resumo do PR**, não o código.
+6. **Valide rodando** antes do merge: use a funcionalidade de verdade (mande o input real, veja a
+   saída). Testes provam o que você especificou; usar prova que era isso que você queria.
+   É assim que você "segura o volante" sem ler código.
 
 ## Prompts: curtos, com critério de pronto
 
@@ -64,6 +67,16 @@ Em parte, e na dose certa:
   estreitas (ex.: triagem de PRs do Renovate). Sempre com condição de parada verificável e teto de custo.
 - **O que evitamos**: loop aberto ("construa o app durante a noite"), fábrica de vários agentes
   e subagentes por especialidade. Gastam muito mais tokens sem ganho comprovado para quem trabalha sozinho.
+
+## Mais agentes ou mais estrutura? (para o seu trabalho e para apps agênticos)
+Checklist da Anthropic ("Common workflow patterns", mar/2026), na ordem:
+1. Um agente só dá conta? **Pare aqui** (é o caso quase sempre).
+2. Há dependências claras entre etapas? Fluxo **sequencial**.
+3. Subtarefas independentes e velocidade importa? **Paralelo**, com a forma de juntar os resultados decidida antes.
+4. Refinar melhora a qualidade de forma **mensurável**? **Avaliador-otimizador**, com limite de
+   iterações. Se um linter ou teste resolve, use-o em vez de um agente avaliador.
+
+Mantenha sempre a versão de um agente só como linha de base para provar que a estrutura extra ajuda.
 
 ## Rotina de custo
 - **Diária:** olhar `/usage`.
