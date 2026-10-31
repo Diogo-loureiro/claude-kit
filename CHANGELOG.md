@@ -11,6 +11,10 @@
   project's CLAUDE.md at it for UI work.
 
 ## Unreleased (template)
+- CI `security` job, report-only: OSV-Scanner (known vulnerabilities in lockfiles) and Semgrep CE
+  (code) write their findings to the job summary and never fail the build (#6).
+- `.github/dependabot.yml` (project-owned): weekly grouped updates with a 7-day release cooldown.
+  New projects get it; existing ones get it on the next `copier update`.
 - kit-update requires `KIT_TOKEN` and fails early with instructions; `scripts/set-kit-token.sh`
   sets it on every project (#7). With the token, the update PR triggers CI and works even where
   Actions may not open PRs.
