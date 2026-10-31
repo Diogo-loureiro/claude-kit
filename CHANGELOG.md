@@ -10,7 +10,7 @@
   Portuguese) with its `exemplo.html` reference page. Manual-only (`disable-model-invocation`); point a
   project's CLAUDE.md at it for UI work.
 
-## Unreleased (template)
+## v0.1.5 (2026-11-01)
 - CI `security` job, report-only: OSV-Scanner (known vulnerabilities in lockfiles) and Semgrep CE
   (code) write their findings to the job summary and never fail the build (#6).
 - `.github/dependabot.yml` (project-owned): weekly grouped updates with a 7-day release cooldown.
