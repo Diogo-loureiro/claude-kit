@@ -3,6 +3,9 @@
 ## Unreleased (global layer, live via git pull)
 - `remoteControlAtStartup: true` in global settings: every session is reachable from the Claude mobile app.
 - `cloud/setup.sh`: cloud environment setup script that installs the global CLAUDE.md and skills in cloud sessions.
+- `/receita-visual` global skill: the "vidro e grafite" visual recipe (by a colleague, kept verbatim in
+  Portuguese) with its `exemplo.html` reference page. Manual-only (`disable-model-invocation`); point a
+  project's CLAUDE.md at it for UI work.
 
 ## v0.1.4 (2026-10-31)
 - Stop hook runs only the tests affected by the change (pytest-testmon, added to py dev deps);
