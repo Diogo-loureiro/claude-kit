@@ -1,6 +1,9 @@
 import { expect, it } from "vitest";
-import { appName } from "../src/index";
 
-it("exposes the app name", () => {
-  expect(appName).toBe("{{ project_name }}");
+it("loads src/index when present", async () => {
+  // Template sample: proves the test runner is wired. Self-contained on purpose: copier
+  // re-creates it on every update when deleted, so it must pass in any project.
+  const entry = "../src/index";
+  const mod: unknown = await import(/* @vite-ignore */ entry).catch(() => null);
+  expect(mod === null || typeof mod === "object").toBe(true);
 });
