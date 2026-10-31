@@ -7,6 +7,9 @@
   Portuguese) with its `exemplo.html` reference page. Manual-only (`disable-model-invocation`); point a
   project's CLAUDE.md at it for UI work.
 
+## Unreleased (template)
+- No empty `src/` when `stack=none` (#4).
+
 ## v0.1.4 (2026-10-31)
 - Stop hook runs only the tests affected by the change (pytest-testmon, added to py dev deps);
   `scripts/check ci` still runs the whole suite (#1). Existing py projects: `uv add --dev pytest-testmon`.
