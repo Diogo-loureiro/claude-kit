@@ -76,7 +76,16 @@ Then make the first `scripts/check ci` pass without hiding new problems:
 3. Update `CHANGELOG.md`, commit, `git tag vX.Y.Z && git push --tags`. `kit-ci` must be green.
 4. The following Monday each project gets a PR `chore: update claude-kit to vX.Y.Z`
    (or run it now: Actions tab → kit-update → Run workflow). Green CI → merge.
-   Updates that touch `.github/workflows/` need the `KIT_TOKEN` secret (issue #7).
+   kit-update needs the `KIT_TOKEN` secret (below) and fails with a clear message without it.
+
+### KIT_TOKEN (once, for all projects)
+The default `GITHUB_TOKEN` can't push changes to `.github/workflows/`, PRs it opens don't trigger
+CI, and repos may forbid Actions to open PRs at all. So kit-update uses a token of yours:
+1. GitHub → Settings → Developer settings → Fine-grained tokens → new token. Repositories: your
+   projects + claude-kit. Permissions: **Contents, Pull requests, Workflows = Read and write**
+   (on claude-kit, Contents read is enough, but one token for all is simpler).
+2. `scripts/set-kit-token.sh` finds every repo generated from the kit and sets the secret on each
+   (the token is read hidden from stdin). Re-run it when the token expires or for a new project.
 
 Versions: patch/minor = compatible change; major = requires action in the project (explain it in the CHANGELOG).
 With every new model generation, run the evals and **remove** what no longer makes a difference.
