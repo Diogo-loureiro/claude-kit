@@ -63,6 +63,9 @@ Then make the first `scripts/check ci` pass without hiding new problems:
   and `uv run ruff format .` until both are clean. Legacy violations get a `# noqa`; new code
   gets the full rules, and RUF100 flags each `noqa` once its line is fixed.
 - Files over 800 lines: split them, or delete them if dead.
+- CI runs a plain `uv sync --locked`: pin the interpreter in `.python-version` (otherwise the
+  runner's newest Python is used) and, if tests need optional extras, add
+  `"<project>[extra1,extra2]"` to the `dev` dependency group.
 - Order-dependent tests show up once the Stop hook runs only affected tests: fix the leak
   (usually `sys.modules` or global state changed without `monkeypatch`).
 
