@@ -1,0 +1,24 @@
+# Project-owned (created once by claude-kit, never overwritten): add directories as the
+# project grows (e.g. a web/ workspace). Dependency PRs need the deps-approved label to merge.
+# cooldown: only propose versions published at least 7 days ago (supply-chain safety).
+version: 2
+updates:
+{%- if stack == 'py' %}
+  - package-ecosystem: uv
+    directory: /
+    schedule: { interval: weekly }
+    cooldown: { default-days: 7 }
+    groups: { all: { patterns: ["*"] } }
+{%- endif %}
+{%- if stack == 'ts' %}
+  - package-ecosystem: npm
+    directory: /
+    schedule: { interval: weekly }
+    cooldown: { default-days: 7 }
+    groups: { all: { patterns: ["*"] } }
+{%- endif %}
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: weekly }
+    cooldown: { default-days: 7 }
+    groups: { all: { patterns: ["*"] } }
