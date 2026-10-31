@@ -1,0 +1,20 @@
+.env
+.env.*
+!.env.example
+*.pem
+*.rej
+.claude/settings.local.json
+NOTES.md
+{%- if stack == 'py' %}
+.venv/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+{%- endif %}
+{%- if stack == 'ts' %}
+node_modules/
+dist/
+coverage/
+{%- endif %}

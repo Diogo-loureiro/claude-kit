@@ -1,0 +1,6 @@
+import { expect, it } from "vitest";
+import { appName } from "../src/index";
+
+it("exposes the app name", () => {
+  expect(appName).toBe("{{ project_name }}");
+});

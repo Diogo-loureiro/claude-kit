@@ -1,0 +1,5 @@
+from {{ project_name|replace('-', '_') }} import APP_NAME
+
+
+def test_app_name() -> None:
+    assert APP_NAME == "{{ project_name }}"

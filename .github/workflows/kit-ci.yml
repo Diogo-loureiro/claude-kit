@@ -1,0 +1,42 @@
+# Tests the kit itself: a broken template would reach every project on the next kit-update.
+name: kit-ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - run: shellcheck install.sh tests/*.sh template/scripts/check template/scripts/agent/*.sh template/.githooks/pre-commit
+
+  generate:
+    strategy:
+      fail-fast: false
+      matrix:
+        stack: [none, py, ts]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v6
+      - if: matrix.stack == 'ts'
+        uses: actions/setup-node@v5
+        with:
+          node-version: lts/*
+      - name: Generate a project from the template
+        run: |
+          git config --global user.name ci
+          git config --global user.email ci@example.com
+          git config --global init.defaultBranch main
+          uvx copier copy --trust --defaults --vcs-ref HEAD \
+            -d project_name=demo-app -d stack=${{ matrix.stack }} . "$RUNNER_TEMP/demo"
+          cd "$RUNNER_TEMP/demo" && git add -A && git commit -qm init
+      - name: Generated project passes its own checks
+        working-directory: ${{ runner.temp }}/demo
+        run: scripts/check ci
+      - name: Hooks behave
+        run: tests/hooks.sh "$RUNNER_TEMP/demo"

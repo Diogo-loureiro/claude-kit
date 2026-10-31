@@ -1,0 +1,60 @@
+# Owned by claude-kit. Runs the same scripts/check the agent hooks and pre-commit run.
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - if: hashFiles('pyproject.toml') != ''
+        uses: astral-sh/setup-uv@v6
+      - if: hashFiles('pyproject.toml') != ''
+        run: uv sync --locked
+      - if: hashFiles('package.json') != ''
+        uses: actions/setup-node@v5
+        with:
+          node-version: lts/*
+      - if: hashFiles('package.json') != ''
+        run: npm ci
+      - run: scripts/check ci
+
+  # Hooks stop the agent's Edit/Write tools, but not `sed -i` via Bash. This gate closes that
+  # hole: harness files, lockfiles and approved acceptance tests change only with your label.
+  gate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+        run: |
+          fail=0
+          harness=$(git diff --name-only "$BASE"...HEAD -- .claude/settings.json .githooks scripts/agent scripts/check \
+            .github/workflows .copier-answers.yml biome.json ruff.toml)
+          locked=$(git diff --name-status --diff-filter=MDR "$BASE"...HEAD -- tests/acceptance | cut -f2-)
+          deps=$(git diff --name-only "$BASE"...HEAD -- uv.lock package-lock.json pnpm-lock.yaml)
+          if [ -n "$harness$locked" ] && [[ ",$LABELS," != *",harness-approved,"* ]]; then
+            echo "::error::Harness or approved acceptance tests changed; needs label harness-approved:"
+            echo "$harness $locked"; fail=1
+          fi
+          if [ -n "$deps" ] && [[ ",$LABELS," != *",deps-approved,"* ]]; then
+            echo "::error::Dependencies changed; review them and add label deps-approved:"
+            git diff "$BASE"...HEAD -- pyproject.toml package.json | grep -E '^[+-] ' || true
+            fail=1
+          fi
+          exit $fail

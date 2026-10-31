@@ -1,0 +1,26 @@
+# {{ project_name }}: mapa para o agente
+Stack: {% if stack == 'py' %}Python (uv){% elif stack == 'ts' %}TypeScript (npm){% else %}a decidir{% endif %}. Specs: docs/specs/. Regras gerais: ~/.claude/CLAUDE.md.
+
+## Comandos (use exatamente estes)
+- Verificação rápida (igual ao Stop hook): `scripts/check stop`
+- Tudo (igual ao CI): `scripts/check ci`
+{%- if stack == 'py' %}
+- Um teste: `uv run pytest caminho/do_teste.py -q`
+- Dependência nova: `uv add <pacote>` (só com justificativa; o CI exige o label deps-approved)
+{%- elif stack == 'ts' %}
+- Um teste: `npx vitest run caminho/do.test.ts`
+- Dependência nova: `npm install <pacote>` (só com justificativa; o CI exige o label deps-approved)
+{%- endif %}
+
+## Regras de domínio que o código não mostra
+<!-- Preencha na primeira sessão. Ex.: dinheiro em centavos inteiros ou Decimal, nunca float. -->
+
+## Fora do alcance do agente (o guard.sh bloqueia)
+- tests/acceptance/** já commitados, configs de lint, hooks, CI, lockfiles, .env.
+- Checks específicos deste projeto: scripts/check.d/*.sh (são do projeto, pode criar).
+
+## Armadilhas
+<!-- Só o que o agente errou duas vezes. Comentários HTML não custam tokens. -->
+
+## Ao compactar
+Preserve: spec ativa, decisões tomadas, arquivos alterados, falhas pendentes.

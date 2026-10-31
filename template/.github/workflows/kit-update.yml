@@ -1,0 +1,51 @@
+# Owned by claude-kit. Once a week, checks for a new claude-kit release and opens a PR
+# applying it (copier update). CI runs on that PR like on any other; you merge it.
+# Optional secret KIT_TOKEN (fine-grained PAT: contents + pull requests write on this repo,
+# contents read on claude-kit): needed if claude-kit is private, and so that CI runs on the PR
+# (PRs opened with the default GITHUB_TOKEN don't trigger other workflows).
+name: kit-update
+on:
+  schedule:
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.KIT_TOKEN || github.token }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.KIT_TOKEN || github.token }}
+      - uses: astral-sh/setup-uv@v6
+      - run: |
+          set +e
+          git config --global url."https://x-access-token:${GH_TOKEN}@github.com/".insteadOf "https://github.com/"
+          uvx copier check-update --quiet
+          rc=$?
+          set -e
+          if [ "$rc" -eq 0 ]; then echo "claude-kit is up to date"; exit 0; fi
+          if [ "$rc" -ne 2 ]; then exit "$rc"; fi
+
+          git config user.name "claude-kit-bot"
+          git config user.email "claude-kit-bot@users.noreply.github.com"
+          branch="kit-update/$(date +%Y%m%d)"
+          git switch -c "$branch"
+          uvx copier update --defaults --trust --skip-tasks --conflict rej
+          version=$(grep '^_commit:' .copier-answers.yml | cut -d' ' -f2)
+          git add -A
+          git commit -m "chore: update claude-kit to $version"
+          git push -u origin "$branch"
+
+          rej=$(git ls-files '*.rej')
+          body="Applies claude-kit $version (see the kit CHANGELOG)."
+          if [ -n "$rej" ]; then
+            body="$body"$'\n\n'"**Conflicts to resolve** (in a Claude session: resolve each .rej, delete it, push):"$'\n'"$rej"
+          fi
+          gh label create harness-approved --color 5319e7 --force >/dev/null
+          gh pr create --title "chore: update claude-kit to $version" --body "$body" --label harness-approved

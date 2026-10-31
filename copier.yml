@@ -1,0 +1,40 @@
+_min_copier_version: "9.4"
+_subdirectory: template
+_answers_file: .copier-answers.yml
+
+# Files the project owns: created once, never touched by `copier update`.
+# Everything else in template/ is owned by the kit and is updated in place.
+_skip_if_exists:
+  - CLAUDE.md
+  - README.md
+  - .gitignore
+  - pyproject.toml
+  - package.json
+  - tsconfig.json
+  - "src/**"
+  - "tests/**"
+  - "docs/**"
+  - "scripts/check.d/*.sh"
+
+_tasks:
+  - "[ -d .git ] || git init -q -b main"
+  - "git config core.hooksPath .githooks"
+  - "chmod +x scripts/check scripts/agent/*.sh .githooks/*"
+  # Dev tools at their current versions; skipped once installed, so updates never bump them.
+  - command: "grep -q ruff pyproject.toml || { command -v uv >/dev/null && uv add --quiet --dev ruff pytest hypothesis mypy; } || echo 'uv ausente: instale e rode  uv add --dev ruff pytest hypothesis mypy'"
+    when: "{{ stack == 'py' }}"
+  - command: "grep -q biome package.json || { command -v npm >/dev/null && npm install --silent -D @biomejs/biome typescript vitest fast-check @types/node; } || echo 'npm ausente: instale Node e rode  npm install -D @biomejs/biome typescript vitest fast-check @types/node'"
+    when: "{{ stack == 'ts' }}"
+
+project_name:
+  type: str
+  help: Nome do projeto (kebab-case, ex. app-financas)
+
+stack:
+  type: str
+  help: Stack do projeto (dá para trocar depois com  copier update -d stack=py)
+  choices:
+    Ainda não decidi: none
+    Python (uv): py
+    TypeScript (npm): ts
+  default: none
