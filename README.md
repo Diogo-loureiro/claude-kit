@@ -53,9 +53,18 @@ Once the stack is set, install the LSP: `/plugin install pyright-lsp@claude-plug
 ## Existing project
 
 ```bash
-cd project && copier copy --trust gh:Diogo-loureiro/claude-kit .   # project-owned files are not overwritten
+cd project && git switch -c chore/adopt-claude-kit
+copier copy --trust --overwrite -d stack=py gh:Diogo-loureiro/claude-kit .   # project-owned files are kept
 ```
-Legacy code will likely fail the first `scripts/check ci`; see issue #5 (baseline).
+Then make the first `scripts/check ci` pass without hiding new problems:
+- Delete `tests/test_smoke.py` (template sample) if the project already has tests.
+- Old hooks in `.githooks/` are replaced: move their project-specific checks to `scripts/check.d/`.
+- Lint baseline (Python): `uv run ruff check --fix .`, then repeat `uv run ruff check --add-noqa .`
+  and `uv run ruff format .` until both are clean. Legacy violations get a `# noqa`; new code
+  gets the full rules, and RUF100 flags each `noqa` once its line is fixed.
+- Files over 800 lines: split them, or delete them if dead.
+- Order-dependent tests show up once the Stop hook runs only affected tests: fix the leak
+  (usually `sys.modules` or global state changed without `monkeypatch`).
 
 ## Improving the kit (and shipping it to every project)
 
