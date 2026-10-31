@@ -3,6 +3,9 @@
 ## Unreleased (global layer, live via git pull)
 - `remoteControlAtStartup: true` in global settings: every session is reachable from the Claude mobile app.
 - `cloud/setup.sh`: cloud environment setup script that installs the global CLAUDE.md and skills in cloud sessions.
+- `syncClaudeAiSkills: false` in global settings: claude.ai-synced skills (docx, pptx, morning…, ~2.4k
+  tokens of descriptions per session) stop loading in Claude Code; claude.ai is unaffected. Want them
+  back? Set it to `true` in `~/.claude/settings.json` (install.sh never overwrites your values).
 - `/receita-visual` global skill: the "vidro e grafite" visual recipe (by a colleague, kept verbatim in
   Portuguese) with its `exemplo.html` reference page. Manual-only (`disable-model-invocation`); point a
   project's CLAUDE.md at it for UI work.
