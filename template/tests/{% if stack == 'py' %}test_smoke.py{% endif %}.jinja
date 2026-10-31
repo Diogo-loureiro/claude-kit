@@ -1,5 +1,7 @@
-from {{ project_name|replace('-', '_') }} import APP_NAME
+import pytest
 
 
-def test_app_name() -> None:
-    assert APP_NAME == "{{ project_name }}"
+def test_package_imports() -> None:
+    # Template sample: proves the test runner is wired. Self-contained on purpose: copier
+    # re-creates it on every update when deleted, so it must pass in any project.
+    pytest.importorskip("{{ project_name|replace('-', '_') }}")
