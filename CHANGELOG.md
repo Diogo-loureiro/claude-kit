@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.1.1 (2026-10-31)
+- Template ts: Biome restrito a `src/` e `tests/` (versões novas também formatam Markdown e quebravam o CI).
+
 ## v0.1.0 (2026-10-31)
 - Camada global: CLAUDE.md (regras do Karpathy adaptadas ao modo autônomo), deny de segredos,
   skills `/spec` e `/ship`, `install.sh` (symlinks + merge de settings sem sobrescrever valores seus).
