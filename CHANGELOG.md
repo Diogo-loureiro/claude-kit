@@ -7,6 +7,11 @@
   Portuguese) with its `exemplo.html` reference page. Manual-only (`disable-model-invocation`); point a
   project's CLAUDE.md at it for UI work.
 
+## Unreleased (template)
+- Template smoke tests are self-contained (py: `importorskip` of the package; ts: optional import of
+  `src/index`). Copier re-creates them on every update when a project deletes them, so they must pass
+  anywhere; projects that keep them just get the new content (#10).
+
 ## v0.1.4 (2026-10-31)
 - Stop hook runs only the tests affected by the change (pytest-testmon, added to py dev deps);
   `scripts/check ci` still runs the whole suite (#1). Existing py projects: `uv add --dev pytest-testmon`.
