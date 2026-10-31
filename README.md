@@ -2,7 +2,7 @@
 
 Framework pessoal para desenvolvimento agêntico com Claude Code: um agente por tarefa,
 contexto mínimo e **verificações determinísticas** no lugar da revisão humana de código.
-Como trabalhar no dia a dia: [PLAYBOOK.md](PLAYBOOK.md). Porquê de cada escolha: [docs/rationale-2026-10.md](docs/rationale-2026-10.md).
+Como trabalhar no dia a dia: [PLAYBOOK.md](PLAYBOOK.md). Porquê de cada escolha: [docs/rationale-2026-10.md](docs/rationale-2026-10.md) (notas de pesquisa em [docs/research/](docs/research/)).
 
 ## Camadas e como cada uma chega aos projetos
 
