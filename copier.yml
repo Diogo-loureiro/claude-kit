@@ -21,7 +21,7 @@ _tasks:
   - "git config core.hooksPath .githooks"
   - "chmod +x scripts/check scripts/agent/*.sh .githooks/*"
   # Dev tools at their current versions; skipped once installed, so updates never bump them.
-  - command: "grep -q ruff pyproject.toml || { command -v uv >/dev/null && uv add --quiet --dev ruff pytest hypothesis mypy; } || echo 'uv missing: install it and run  uv add --dev ruff pytest hypothesis mypy'"
+  - command: "grep -q ruff pyproject.toml || { command -v uv >/dev/null && uv add --quiet --dev ruff pytest pytest-testmon hypothesis mypy; } || echo 'uv missing: install it and run  uv add --dev ruff pytest pytest-testmon hypothesis mypy'"
     when: "{{ stack == 'py' }}"
   - command: "grep -q biome package.json || { command -v npm >/dev/null && npm install --silent -D @biomejs/biome typescript vitest fast-check @types/node; } || echo 'npm missing: install Node and run  npm install -D @biomejs/biome typescript vitest fast-check @types/node'"
     when: "{{ stack == 'ts' }}"
