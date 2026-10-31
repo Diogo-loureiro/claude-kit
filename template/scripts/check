@@ -84,7 +84,10 @@ extras() { # scripts/check.d/*.sh belong to the project; they receive the mode
 secrets() {
   if command -v gitleaks >/dev/null 2>&1; then
     step "gitleaks" gitleaks git --no-banner --redact .
-  fi # CI runs the gitleaks action anyway
+  elif [ -n "${CI:-}" ]; then
+    echo "✗ gitleaks is required in CI"
+    exit 1
+  fi
 }
 
 case "$mode" in

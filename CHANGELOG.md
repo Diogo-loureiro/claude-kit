@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.1.2 (2026-10-31)
+- CI do template: gitleaks instalado direto e rodado pelo `scripts/check ci` (obrigatório no CI). A action `gitleaks-action` falhava no primeiro push de repositório novo (commit raiz sem pai).
+
 ## v0.1.1 (2026-10-31)
 - Template ts: Biome restrito a `src/` e `tests/` (versões novas também formatam Markdown e quebravam o CI).
 
