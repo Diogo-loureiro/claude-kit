@@ -6,5 +6,6 @@
       "Read(./**/*.pem)",
       "Read(~/.ssh/**)"
     ]
-  }
+  },
+  "remoteControlAtStartup": true
 }

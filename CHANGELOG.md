@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased (global layer, live via git pull)
+- `remoteControlAtStartup: true` in global settings: every session is reachable from the Claude mobile app.
+- `cloud/setup.sh`: cloud environment setup script that installs the global CLAUDE.md and skills in cloud sessions.
+
 ## v0.1.3 (2026-10-31)
 - Everything written to files is now in English (docs, skills, template, messages). Conversations
   stay in Brazilian Portuguese. `docs/rationale-2026-10.md` and `docs/research/` remain an archived

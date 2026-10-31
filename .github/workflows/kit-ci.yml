@@ -10,7 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - run: shellcheck install.sh tests/*.sh template/scripts/check template/scripts/agent/*.sh template/.githooks/pre-commit
+      - run: shellcheck install.sh cloud/setup.sh tests/*.sh template/scripts/check template/scripts/agent/*.sh template/.githooks/pre-commit
+      - name: cloud/setup.sh lists every global skill
+        run: for d in global/skills/*/; do grep -q "skills=.*$(basename "$d")" cloud/setup.sh || { echo "missing $d in cloud/setup.sh"; exit 1; }; done
 
   generate:
     strategy:

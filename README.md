@@ -24,6 +24,20 @@ git clone https://github.com/Diogo-loureiro/claude-kit ~/Projetos/claude-kit
 ~/Projetos/claude-kit/install.sh
 ```
 
+## Phone and cloud
+
+- **Remote Control** (steer local sessions from the Claude mobile app): `install.sh` sets
+  `remoteControlAtStartup: true`, so every interactive session shows up in the app's **Code** tab.
+  Your computer must stay on; the session runs locally.
+- **Cloud sessions** (run on Anthropic's VMs, computer can be off): they clone the repo, so project
+  hooks and `CLAUDE.md` work, but they never see your `~/.claude`. In claude.ai/code, edit your cloud
+  environment and set its **Setup script** to:
+  ```bash
+  curl -fsSL https://raw.githubusercontent.com/Diogo-loureiro/claude-kit/main/cloud/setup.sh | bash
+  ```
+  That installs the global `CLAUDE.md` and skills. The environment cache keeps it ~7 days; edit the
+  script to refresh sooner. When adding a global skill, add it to `cloud/setup.sh` too (kit-ci checks).
+
 ## New project
 
 ```bash
