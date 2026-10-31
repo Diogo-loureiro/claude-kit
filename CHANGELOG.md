@@ -8,6 +8,9 @@
   project's CLAUDE.md at it for UI work.
 
 ## Unreleased (template)
+- kit-update requires `KIT_TOKEN` and fails early with instructions; `scripts/set-kit-token.sh`
+  sets it on every project (#7). With the token, the update PR triggers CI and works even where
+  Actions may not open PRs.
 - No empty `src/` when `stack=none` (#4).
 - Template smoke tests are self-contained (py: `importorskip` of the package; ts: optional import of
   `src/index`). Copier re-creates them on every update when a project deletes them, so they must pass

@@ -1,8 +1,9 @@
 # Owned by claude-kit. Once a week, checks for a new claude-kit release and opens a PR
 # applying it (copier update). CI runs on that PR like on any other; you merge it.
-# Optional secret KIT_TOKEN (fine-grained PAT: contents + pull requests write on this repo,
-# contents read on claude-kit): needed if claude-kit is private, and so that CI runs on the PR
-# (PRs opened with the default GITHUB_TOKEN don't trigger other workflows).
+# Requires the secret KIT_TOKEN (fine-grained PAT; Contents, Pull requests and Workflows = write
+# on this repo, Contents = read on claude-kit). The default GITHUB_TOKEN can't push changes to
+# .github/workflows/, PRs it opens don't trigger CI, and repos may forbid Actions to open PRs.
+# Set it on every project at once: claude-kit/scripts/set-kit-token.sh
 name: kit-update
 on:
   schedule:
@@ -16,12 +17,18 @@ jobs:
   update:
     runs-on: ubuntu-latest
     env:
-      GH_TOKEN: ${{ secrets.KIT_TOKEN || github.token }}
+      GH_TOKEN: ${{ secrets.KIT_TOKEN }}
     steps:
+      - name: Require KIT_TOKEN
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::error::Secret KIT_TOKEN is missing. Create a fine-grained PAT (Contents, Pull requests, Workflows = write on this repo; Contents = read on claude-kit) and run claude-kit/scripts/set-kit-token.sh."
+            exit 1
+          fi
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-          token: ${{ secrets.KIT_TOKEN || github.token }}
+          token: ${{ secrets.KIT_TOKEN }}
       - uses: astral-sh/setup-uv@v6
       - run: |
           set +e
