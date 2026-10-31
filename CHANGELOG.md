@@ -1,15 +1,23 @@
 # Changelog
 
+## v0.1.3 (2026-10-31)
+- Everything written to files is now in English (docs, skills, template, messages). Conversations
+  stay in Brazilian Portuguese. `docs/rationale-2026-10.md` and `docs/research/` remain an archived
+  Portuguese record.
+- `/ship` PR body gains "How to validate by running it"; PLAYBOOK adds "validate by running it",
+  one-session-per-area/worktrees, and Anthropic's workflow-patterns checklist.
+
 ## v0.1.2 (2026-10-31)
-- CI do template: gitleaks instalado direto e rodado pelo `scripts/check ci` (obrigatório no CI). A action `gitleaks-action` falhava no primeiro push de repositório novo (commit raiz sem pai).
+- Template CI: gitleaks installed directly and run by `scripts/check ci` (mandatory in CI).
+  `gitleaks-action` failed on the first push of a new repository (root commit has no parent).
 
 ## v0.1.1 (2026-10-31)
-- Template ts: Biome restrito a `src/` e `tests/` (versões novas também formatam Markdown e quebravam o CI).
+- ts template: Biome restricted to `src/` and `tests/` (newer versions also format Markdown and broke CI).
 
 ## v0.1.0 (2026-10-31)
-- Camada global: CLAUDE.md (regras do Karpathy adaptadas ao modo autônomo), deny de segredos,
-  skills `/spec` e `/ship`, `install.sh` (symlinks + merge de settings sem sobrescrever valores seus).
-- Template Copier (stack `none | py | ts`): `scripts/check fast|stop|ci`, hooks PreToolUse (guard),
-  PostToolUse (format) e Stop (gate com no máximo 3 bloqueios seguidos), pre-commit, CI com gitleaks
-  e gates `harness-approved` / `deps-approved`, workflow semanal `kit-update`.
-- `kit-ci`: shellcheck + geração de projeto por stack + testes de comportamento dos hooks.
+- Global layer: CLAUDE.md (Karpathy-style rules adapted to autonomous mode), secret deny rules,
+  `/spec` and `/ship` skills, `install.sh` (symlinks + settings merge that never overwrites your values).
+- Copier template (stack `none | py | ts`): `scripts/check fast|stop|ci`, PreToolUse (guard),
+  PostToolUse (format) and Stop hooks (gate with at most 3 consecutive blocks), pre-commit, CI with
+  gitleaks and `harness-approved` / `deps-approved` gates, weekly `kit-update` workflow.
+- `kit-ci`: shellcheck + project generation per stack + hook behavior tests.

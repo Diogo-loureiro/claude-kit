@@ -1,20 +1,22 @@
 # claude-kit
 
-Framework pessoal para desenvolvimento agêntico com Claude Code: um agente por tarefa,
-contexto mínimo e **verificações determinísticas** no lugar da revisão humana de código.
-Como trabalhar no dia a dia: [PLAYBOOK.md](PLAYBOOK.md). Porquê de cada escolha: [docs/rationale-2026-10.md](docs/rationale-2026-10.md) (notas de pesquisa em [docs/research/](docs/research/)).
+Personal framework for agentic development with Claude Code: one agent per task, minimal
+context, and **deterministic checks** instead of human code review.
+Day-to-day workflow: [PLAYBOOK.md](PLAYBOOK.md). Why each choice was made:
+[docs/rationale-2026-10.md](docs/rationale-2026-10.md) (research notes in [docs/research/](docs/research/);
+both are an archived October 2026 record, written in Portuguese).
 
-## Camadas e como cada uma chega aos projetos
+## Layers and how each one reaches projects
 
-| Camada | Onde | Propagação |
+| Layer | Where | Propagation |
 |---|---|---|
-| Regras globais + skills `/spec` e `/ship` | `global/` → symlinks em `~/.claude` | `git pull` no kit (imediato) |
-| Hooks, `scripts/check`, lint, CI do projeto | `template/` (Copier) | PR semanal automático (`kit-update`) em cada projeto |
-| Testes do próprio kit | `.github/workflows/kit-ci.yml`, `tests/` | todo push |
+| Global rules + `/spec` and `/ship` skills | `global/` → symlinks in `~/.claude` | `git pull` in the kit (immediate) |
+| Hooks, `scripts/check`, lint, project CI | `template/` (Copier) | automatic weekly PR (`kit-update`) in each project |
+| Tests for the kit itself | `.github/workflows/kit-ci.yml`, `tests/` | every push |
 
-`scripts/check` é a única fonte dos checks: os hooks do agente, o pre-commit e o CI chamam o mesmo script.
+`scripts/check` is the single source of checks: the agent hooks, the pre-commit hook and CI all call the same script.
 
-## Instalar (uma vez por máquina)
+## Install (once per machine)
 
 ```bash
 uv tool install copier
@@ -22,38 +24,46 @@ git clone https://github.com/Diogo-loureiro/claude-kit ~/Projetos/claude-kit
 ~/Projetos/claude-kit/install.sh
 ```
 
-## Projeto novo
+## New project
 
 ```bash
-copier copy --trust gh:Diogo-loureiro/claude-kit ~/Projetos/meu-projeto   # pergunta nome e stack
-cd ~/Projetos/meu-projeto
+copier copy --trust gh:Diogo-loureiro/claude-kit ~/Projetos/my-project   # asks for name and stack
+cd ~/Projetos/my-project
 git add -A && git commit -m "chore: scaffold from claude-kit"
-gh repo create meu-projeto --private --source . --push
+gh repo create my-project --private --source . --push
 ```
-Primeira sessão no projeto: peça ao Claude para preencher o `CLAUDE.md` (regras de domínio) e,
-se a stack ainda não foi decidida, troque depois com `copier update --trust -d stack=py` (ou `ts`).
-Depois que tiver a stack, instale o LSP: `/plugin install pyright-lsp@claude-plugins-official` (ou `typescript-lsp`).
+First session in the project: ask Claude to fill in `CLAUDE.md` (domain rules). If the stack is still
+undecided, switch later with `copier update --trust -d stack=py` (or `ts`).
+Once the stack is set, install the LSP: `/plugin install pyright-lsp@claude-plugins-official` (or `typescript-lsp`).
 
-## Projeto existente
+## Existing project
 
 ```bash
-cd projeto && copier copy --trust gh:Diogo-loureiro/claude-kit .   # arquivos do projeto não são sobrescritos
+cd project && copier copy --trust gh:Diogo-loureiro/claude-kit .   # project-owned files are not overwritten
 ```
+Legacy code will likely fail the first `scripts/check ci`; see issue #5 (baseline).
 
-## Melhorar o kit (e levar a todos os projetos)
+## Improving the kit (and shipping it to every project)
 
-1. Mude aqui, nunca direto num projeto. Arquivos do kit são bloqueados para o agente nos projetos.
-2. Se a mudança afeta o comportamento do agente, rode antes os evals (`evals/`) e compare custo e acerto.
-3. Atualize o `CHANGELOG.md`, commit, `git tag vX.Y.Z && git push --tags`. O `kit-ci` precisa estar verde.
-4. Na segunda seguinte cada projeto recebe um PR `chore: update claude-kit to vX.Y.Z`
-   (ou rode na hora: aba Actions → kit-update → Run workflow). CI verde → merge.
+1. Change it here, never directly in a project. Kit files are locked for the agent inside projects.
+2. If the change affects agent behavior, run the evals (`evals/`) first and compare cost and accuracy.
+3. Update `CHANGELOG.md`, commit, `git tag vX.Y.Z && git push --tags`. `kit-ci` must be green.
+4. The following Monday each project gets a PR `chore: update claude-kit to vX.Y.Z`
+   (or run it now: Actions tab → kit-update → Run workflow). Green CI → merge.
+   Updates that touch `.github/workflows/` need the `KIT_TOKEN` secret (issue #7).
 
-Versões: patch/minor = ajuste compatível; major = exige ação no projeto (explique no CHANGELOG).
-A cada nova geração de modelo, rode os evals e **remova** o que deixou de fazer diferença.
+Versions: patch/minor = compatible change; major = requires action in the project (explain it in the CHANGELOG).
+With every new model generation, run the evals and **remove** what no longer makes a difference.
 
-## Arquivos: de quem é cada um
+## Who owns each file
 
-- **Do kit** (atualizados pelo `copier update`; bloqueados para o agente): `.claude/settings.json`,
+- **Kit-owned** (updated by `copier update`; locked for the agent): `.claude/settings.json`,
   `scripts/check`, `scripts/agent/*`, `.githooks/*`, `.github/workflows/*`, `ruff.toml`, `biome.json`.
-- **Do projeto** (criados uma vez, nunca sobrescritos): `CLAUDE.md`, `README.md`, `pyproject.toml`,
+- **Project-owned** (created once, never overwritten): `CLAUDE.md`, `README.md`, `pyproject.toml`,
   `package.json`, `tsconfig.json`, `src/`, `tests/`, `docs/`, `scripts/check.d/*.sh`.
+
+## Language
+
+Files are written in English (code, docs, commits, PRs). Conversations with Claude happen in
+Brazilian Portuguese (set in `global/CLAUDE.md`). Verbatim domain inputs, such as bank notification
+texts, stay in their original language.

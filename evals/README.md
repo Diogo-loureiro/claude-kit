@@ -1,13 +1,13 @@
-# Evals do kit (a fazer: v0.2)
+# Kit evals (to do: issue #2)
 
-Objetivo: saber se uma mudança no kit (regra no CLAUDE.md, hook, skill) **melhora ou piora**
-acerto e custo, em vez de decidir por opinião. Recomendação da Anthropic (out/2026): 10 exemplos
-"de ouro" bastam para começar, e cada um deve rodar mais de uma vez por causa da variância.
+Goal: know whether a kit change (a CLAUDE.md rule, a hook, a skill) **improves or worsens**
+accuracy and cost, instead of deciding by opinion. Anthropic's advice (Oct 2026): 10 "golden"
+examples are enough to start, and each one should run more than once because of variance.
 
-Plano:
-1. Quando o App_financas tiver código, escolher ~10 tarefas reais e pequenas (1 bug, 1 feature,
-   1 regra de dinheiro, 1 importação...), cada uma com testes de aceitação que definem "certo".
-2. `evals/run.sh`: para cada tarefa, worktree limpa no commit-base, então
-   `claude -p "<prompt>" --max-turns 40 --max-budget-usd 2 --output-format json`, 2 execuções;
-   registrar se os testes passam, custo e turnos.
-3. Rodar antes de cada tag que mude o comportamento do agente; anotar o resultado no CHANGELOG.
+Plan:
+1. Once the first app has code, pick ~10 real, small tasks (1 bug, 1 feature, 1 money rule,
+   1 import...), each with acceptance tests that define "correct".
+2. `evals/run.sh`: for each task, a clean worktree at the base commit, then
+   `claude -p "<prompt>" --max-turns 40 --max-budget-usd 2 --output-format json`, 2 runs;
+   record whether the tests pass, the cost and the number of turns.
+3. Run before every tag that changes agent behavior; note the result in the CHANGELOG.

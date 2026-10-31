@@ -1,17 +1,18 @@
 ---
 name: ship
-description: Fecha uma tarefa - roda todos os checks, revisa o diff em contexto novo, commita e abre PR com evidência.
+description: Finishes a task - runs every check, reviews the diff in a fresh context, commits and opens a PR with evidence.
 disable-model-invocation: true
 ---
 
 # Ship
 
-1. Rode `scripts/check ci`. Se falhar, corrija (no máximo 2 tentativas); senão pare e relate.
-2. Revise o diff com a skill `code-review` (contexto novo): correção contra a spec, ignore estilo.
-   Corrija só os achados de alta confiança e rode o passo 1 de novo.
-3. Se o diff toca dinheiro, auth, parsing, importação ou I/O: rode também `security-review`.
-4. Se estiver na `main`, crie a branch: `git switch -c <feat|fix|chore>/<slug>`.
-   Commit no formato Conventional Commits, em inglês.
-5. `git push -u origin HEAD` e `gh pr create` com o corpo:
-   **O quê** / **Por quê** / **Evidência** (comandos + últimas linhas da saída) / **Riscos** / link da spec.
-6. Responda com a URL do PR. Não faça merge.
+1. Run `scripts/check ci`. If it fails, fix it (at most 2 attempts); otherwise stop and report.
+2. Review the diff with the `code-review` skill (fresh context): correctness against the spec, skip style.
+   Fix only high-confidence findings and run step 1 again.
+3. If the diff touches money, auth, parsing, import or I/O: also run `security-review`.
+4. If on `main`, create a branch: `git switch -c <feat|fix|chore>/<slug>`.
+   Commit using Conventional Commits.
+5. `git push -u origin HEAD` and `gh pr create` with the body:
+   **What** / **Why** / **Evidence** (commands + last lines of output) / **Risks** / spec link /
+   **How to validate by running it** (the exact steps for the human to try the feature).
+6. Reply with the PR URL and the validation steps, in the user's language. Don't merge.

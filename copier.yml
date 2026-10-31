@@ -21,20 +21,20 @@ _tasks:
   - "git config core.hooksPath .githooks"
   - "chmod +x scripts/check scripts/agent/*.sh .githooks/*"
   # Dev tools at their current versions; skipped once installed, so updates never bump them.
-  - command: "grep -q ruff pyproject.toml || { command -v uv >/dev/null && uv add --quiet --dev ruff pytest hypothesis mypy; } || echo 'uv ausente: instale e rode  uv add --dev ruff pytest hypothesis mypy'"
+  - command: "grep -q ruff pyproject.toml || { command -v uv >/dev/null && uv add --quiet --dev ruff pytest hypothesis mypy; } || echo 'uv missing: install it and run  uv add --dev ruff pytest hypothesis mypy'"
     when: "{{ stack == 'py' }}"
-  - command: "grep -q biome package.json || { command -v npm >/dev/null && npm install --silent -D @biomejs/biome typescript vitest fast-check @types/node; } || echo 'npm ausente: instale Node e rode  npm install -D @biomejs/biome typescript vitest fast-check @types/node'"
+  - command: "grep -q biome package.json || { command -v npm >/dev/null && npm install --silent -D @biomejs/biome typescript vitest fast-check @types/node; } || echo 'npm missing: install Node and run  npm install -D @biomejs/biome typescript vitest fast-check @types/node'"
     when: "{{ stack == 'ts' }}"
 
 project_name:
   type: str
-  help: Nome do projeto (kebab-case, ex. app-financas)
+  help: Project name (kebab-case, e.g. my-app)
 
 stack:
   type: str
-  help: Stack do projeto (dá para trocar depois com  copier update -d stack=py)
+  help: Project stack (can be changed later with  copier update -d stack=py)
   choices:
-    Ainda não decidi: none
+    Not decided yet: none
     Python (uv): py
     TypeScript (npm): ts
   default: none

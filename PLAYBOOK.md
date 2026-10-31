@@ -1,88 +1,90 @@
-# Playbook: como trabalhar com o claude-kit
+# Playbook: how to work with claude-kit
 
-A ideia em uma frase: **você define o que é "certo" com exemplos; o agente faz; verificações
-automáticas decidem se está pronto.** Você não revisa código; revisa intenção.
+The idea in one sentence: **you define what "correct" means with examples; the agent builds it;
+automated checks decide when it's done.** You don't review code; you review intent.
 
-## O ciclo de uma tarefa
+## The cycle of a task
 
-1. **Uma tarefa = uma sessão.** Abra o Claude no projeto. Ao terminar, `/clear`.
-2. **Peça em 4 partes**, curto (veja abaixo).
-3. O agente trabalha. A cada edição o arquivo é formatado; ao final do turno o `Stop hook`
-   roda `scripts/check stop` e não o deixa parar enquanto algo falha.
-4. `/ship` → checks completos, revisão em contexto novo, commit e PR com evidência.
-5. O CI roda os mesmos checks + segredos + gates. Você olha **o resumo do PR**, não o código.
-6. **Valide rodando** antes do merge: use a funcionalidade de verdade (mande o input real, veja a
-   saída). Testes provam o que você especificou; usar prova que era isso que você queria.
-   É assim que você "segura o volante" sem ler código.
+1. **One task = one session.** Open Claude in the project. When done, `/clear`.
+2. **Ask in 4 parts**, briefly (see below).
+3. The agent works. Every edited file is formatted; at the end of each turn the `Stop` hook
+   runs `scripts/check stop` and won't let it stop while something fails.
+4. `/ship` → full checks, review in a fresh context, commit and PR with evidence.
+5. CI runs the same checks + secrets scan + gates. You read **the PR summary**, not the code.
+6. **Validate by running it** before merging: use the feature for real (send the real input, look
+   at the output). Tests prove what you specified; using it proves it's what you wanted.
+   That's how you "keep your hands on the wheel" without reading code.
 
-## Prompts: curtos, com critério de pronto
+## Prompts: short, with a definition of done
 
-Não precisa de prompt gigante. As regras permanentes já estão no CLAUDE.md, nos hooks e no CI;
-o prompt só diz **o que muda agora**. Use as 4 partes (uma linha cada basta):
+No giant prompts needed. Permanent rules already live in CLAUDE.md, hooks and CI; the prompt only
+says **what changes now**. Use the 4 parts (one line each is enough):
 
 ```
-Objetivo: <o que o usuário passa a conseguir fazer>
-Abordagem: <se você já tem preferência; senão omita>
-Não quero: <limites: sem dependência nova, não mexer em X>
-Pronto quando: <teste/comando/comportamento verificável>
+Goal: <what the user can now do>
+Approach: <only if you have a preference; otherwise omit>
+Don't: <limits: no new dependency, don't touch X>
+Done when: <verifiable test/command/behavior>
 ```
 
-Exemplo real:
+Real example:
 ```
-Objetivo: importar extrato OFX do Nubank para a conta escolhida.
-Não quero: dependência nova sem me perguntar; mexer no cálculo de saldo.
-Pronto quando: importar o mesmo arquivo 2x não duplica transações e scripts/check stop passa.
+Goal: import a Nubank OFX statement into the selected account.
+Don't: add a dependency without asking me; touch the balance calculation.
+Done when: importing the same file twice doesn't duplicate transactions and scripts/check stop passes.
 ```
 
-Prompt longo só faz sentido como **spec** (abaixo), e quem escreve a spec é o agente, entrevistando você.
+A long prompt only makes sense as a **spec** (below), and the agent writes the spec by interviewing you.
 
-## Por tamanho de tarefa
+## By task size
 
-| Tamanho | Como pedir | O que você aprova |
+| Size | How to ask | What you approve |
 |---|---|---|
-| Trivial (typo, config, bug de 1 arquivo) | Prompt direto, 1–2 linhas | Nada: hooks + CI |
-| Médio (feature de 2–10 arquivos) | 4 partes; "comece por um teste que falha" | O PR (resumo + evidência) |
-| Grande/crítico (dinheiro, auth, importação, schema) | `/spec <feature>` → aprovar → `/clear` → `/goal os testes de aceitação e scripts/check stop passam` | **A tabela de exemplos** (commit = trava) |
-| Mecânico em massa (renomear em 40 arquivos) | `/model sonnet` numa sessão própria, ou `/batch` | CI verde |
+| Trivial (typo, config, 1-file bug) | Direct prompt, 1–2 lines | Nothing: hooks + CI |
+| Medium (2–10 file feature) | 4 parts; "start with a failing test" | The PR (summary + evidence) |
+| Large/critical (money, auth, import, schema) | `/spec <feature>` → approve → `/clear` → `/goal acceptance tests and scripts/check stop pass` | **The example table** (commit = lock) |
+| Bulk mechanical (rename across 40 files) | `/model sonnet` in its own session, or `/batch` | Green CI |
 
-Tarefas grandes: `Shift+Tab` (plan mode) antes de codar ajuda a ver o plano em 10 linhas.
+Large tasks: `Shift+Tab` (plan mode) before coding shows the plan in 10 lines.
 
-## As 3 coisas que só você decide
-1. **Exemplos de aceitação** (o que é certo). Commitar `tests/acceptance/` = aprovar.
-2. **Dependências novas**: o CI exige o label `deps-approved` no PR.
-3. **Mudanças no harness** (hooks, lint, CI, testes aprovados): label `harness-approved`.
-   Para você mesmo editar esses arquivos numa sessão: `KIT_UNLOCK=1 claude`.
+## The 3 things only you decide
+1. **Acceptance examples** (what's correct). Committing `tests/acceptance/` = approving.
+2. **New dependencies**: CI requires the `deps-approved` label on the PR.
+3. **Harness changes** (hooks, lint, CI, approved tests): `harness-approved` label.
+   To edit those files yourself in a session: `KIT_UNLOCK=1 claude`.
 
-## Comandos do dia a dia
-- `/clear` entre tarefas · `/rewind` para desfazer um caminho ruim · `/btw` para pergunta paralela
-- `/effort low|medium|high` (padrão: medium; high só para bug difícil ou código desconhecido)
-- `/usage` e `/context`: custo e o que está ocupando contexto
-- Duas correções sem sucesso? `/clear` e um prompt melhor, em vez de insistir.
+## Everyday commands
+- `/clear` between tasks · `/rewind` to undo a bad path · `/btw` for a side question
+- `/effort low|medium|high` (default: medium; high only for hard bugs or unfamiliar code)
+- `/usage` and `/context`: cost and what's taking up context
+- Two failed corrections? `/clear` and a better prompt, instead of insisting.
+- **One session per area at a time.** Two sessions editing the same files overwrite each other.
+  For real parallel work, give each session its own copy: `claude -w` (git worktree).
 
-## Isso é "loop engineering"?
-Em parte, e na dose certa:
-- **Loop interno** (agente ↔ verificações): o Stop hook e o `/goal` fazem o agente iterar até
-  os checks passarem. Isso é harness engineering, e é o que mais rende.
-- **Loop externo** (agendado): o workflow `kit-update` toda segunda e, no futuro, rotinas
-  estreitas (ex.: triagem de PRs do Renovate). Sempre com condição de parada verificável e teto de custo.
-- **O que evitamos**: loop aberto ("construa o app durante a noite"), fábrica de vários agentes
-  e subagentes por especialidade. Gastam muito mais tokens sem ganho comprovado para quem trabalha sozinho.
+## Is this "loop engineering"?
+Partly, in the right dose:
+- **Inner loop** (agent ↔ checks): the Stop hook and `/goal` make the agent iterate until checks
+  pass. That's harness engineering, and it pays off the most.
+- **Outer loop** (scheduled): the `kit-update` workflow every Monday and, later, narrow routines
+  (e.g., triaging Renovate PRs). Always with a machine-checkable stop condition and a cost cap.
+- **What we avoid**: open loops ("build the app overnight"), multi-agent factories and per-specialty
+  subagents. They spend far more tokens with no proven gain for a solo developer.
 
-## Mais agentes ou mais estrutura? (para o seu trabalho e para apps agênticos)
-Checklist da Anthropic ("Common workflow patterns", mar/2026), na ordem:
-1. Um agente só dá conta? **Pare aqui** (é o caso quase sempre).
-2. Há dependências claras entre etapas? Fluxo **sequencial**.
-3. Subtarefas independentes e velocidade importa? **Paralelo**, com a forma de juntar os resultados decidida antes.
-4. Refinar melhora a qualidade de forma **mensurável**? **Avaliador-otimizador**, com limite de
-   iterações. Se um linter ou teste resolve, use-o em vez de um agente avaliador.
+## More agents or more structure? (for your work and for agentic apps)
+Anthropic's checklist ("Common workflow patterns", Mar 2026), in order:
+1. Can a single agent handle it? **Stop here** (almost always the case).
+2. Clear dependencies between steps? **Sequential** workflow.
+3. Independent subtasks and speed matters? **Parallel**, with the way to merge results decided upfront.
+4. Does refinement improve quality **measurably**? **Evaluator-optimizer**, with an iteration cap.
+   If a linter or test can do the evaluation, use it instead of an evaluator agent.
 
-Mantenha sempre a versão de um agente só como linha de base para provar que a estrutura extra ajuda.
+Always keep the single-agent version as a baseline to prove the extra structure helps.
 
-## Rotina de custo
-- **Diária:** olhar `/usage`.
-- **Semanal:** `npx ccusage@latest`; podar plugins "Not used recently".
-- **Mensal:** `/doctor prompt-audit`; levar ao kit os erros repetidos (seção "Armadilhas" de cada projeto).
-- Se o limite apertar: `/clear` mais cedo → effort menor → Sonnet no mecânico → só então plano maior.
+## Cost routine
+- **Daily:** check `/usage`.
+- **Weekly:** `npx ccusage@latest`; prune plugins marked "Not used recently".
+- **Monthly:** `/doctor prompt-audit`; move repeated mistakes into the kit (each project's "Pitfalls" section).
+- If you hit limits: `/clear` earlier → lower effort → Sonnet for mechanical work → only then a bigger plan.
 
-## Melhorar o framework
-Toda melhoria nasce **no claude-kit**, nunca direto num projeto. Veja o README do kit.
+## Improving the framework
+Every improvement starts **in claude-kit**, never directly in a project. See the kit README.

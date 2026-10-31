@@ -21,7 +21,7 @@ n=$(($(cat "$counter" 2>/dev/null || echo 0) + 1))
 echo "$n" >"$counter"
 if [ "$n" -gt 3 ]; then
   rm -f "$counter"
-  printf '{"systemMessage": "scripts/check stop ainda falha depois de 3 tentativas; turno liberado para você decidir."}\n'
+  printf '{"systemMessage": "scripts/check stop still fails after 3 attempts; turn released so you can decide."}\n'
   exit 0
 fi
 printf 'scripts/check stop is failing. Fix it before finishing, or explain what blocks you:\n%s\n' "$out" >&2

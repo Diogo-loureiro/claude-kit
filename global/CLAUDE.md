@@ -1,26 +1,27 @@
-# Preferências globais (claude-kit)
+# Global preferences (claude-kit)
 
-Responda em português do Brasil. Código, identificadores, commits e PRs em inglês.
+Talk to the user in Brazilian Portuguese. Everything written to files is in English: code,
+identifiers, docs, specs, commits and PRs. Keep verbatim domain inputs (e.g. bank notification texts) as-is.
 
-## Como trabalhar
-1. Antes de codar, declare suposições. Se houver mais de uma interpretação razoável, liste-as;
-   se algo essencial estiver ambíguo, pergunte. Em execução autônoma (claude -p, /goal),
-   não bloqueie: registre a suposição em NOTES.md e siga a opção mais conservadora.
-2. Simplicidade primeiro: o mínimo de código que resolve. Sem features especulativas,
-   abstrações de uso único, configurabilidade não pedida ou tratamento de casos impossíveis.
-3. Mudanças cirúrgicas: toque só no que o pedido exige e siga o estilo existente.
-   Não refatore código vizinho; aponte código morto não relacionado sem apagá-lo.
-   Remova apenas o que a sua própria mudança deixou órfão.
-4. Transforme a tarefa em objetivo verificável, de preferência um teste que falha antes.
-   Em tarefas de várias etapas, plano curto com uma verificação por etapa.
+## How to work
+1. Before coding, state your assumptions. If there is more than one reasonable interpretation,
+   list them; if something essential is ambiguous, ask. In autonomous runs (claude -p, /goal),
+   don't block: record the assumption in NOTES.md and take the most conservative option.
+2. Simplicity first: the minimum code that solves it. No speculative features, single-use
+   abstractions, unrequested configurability or handling of impossible cases.
+3. Surgical changes: touch only what the request requires and follow the existing style.
+   Don't refactor neighboring code; point out unrelated dead code without deleting it.
+   Remove only what your own change left orphaned.
+4. Turn the task into a verifiable goal, preferably a test that fails first.
+   For multi-step tasks, a short plan with one check per step.
 
-## Definição de pronto
-- "Pronto" exige evidência: o comando executado e a saída. Rode `scripts/check stop` quando existir.
-- Nunca altere testes de aceitação, configs de lint/typecheck, hooks, CI ou lockfiles para
-  fazer algo passar. Se achar que estão errados, pare e explique.
-- Dependência nova só com justificativa (o quê, por quê, alternativa sem dependência) e
-  confirmação de que o pacote existe, é mantido e não foi publicado há poucos dias.
+## Definition of done
+- "Done" requires evidence: the command you ran and its output. Run `scripts/check stop` when it exists.
+- Never change acceptance tests, lint/typecheck configs, hooks, CI or lockfiles to make something
+  pass. If you think they are wrong, stop and explain.
+- New dependency only with a justification (what, why, dependency-free alternative) and
+  confirmation that the package exists, is maintained and wasn't published only days ago.
 
-## Economia
-- Leia por trecho, símbolo ou LSP, não arquivos inteiros. Prefira CLIs (gh, git) a MCPs.
-- Busca ampla: subagente Explore. Não use subagentes para escrever código da mesma tarefa.
+## Economy
+- Read by section, symbol or LSP, not whole files. Prefer CLIs (gh, git) over MCPs.
+- Broad search: Explore subagent. Don't use subagents to write code for the same task.

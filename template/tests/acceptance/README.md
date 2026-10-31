@@ -1,5 +1,5 @@
-# Testes de aceitação
+# Acceptance tests
 
-Um teste por linha da tabela de exemplos da spec. O agente pode **criar** arquivos aqui;
-depois que você commita (aprova), o agente não pode mais editá-los e o CI exige o label
-`harness-approved` para qualquer mudança.
+One test per row of the spec's example table. The agent may **create** files here; once you
+commit them (approve), the agent can no longer edit them and CI requires the `harness-approved`
+label for any change.
