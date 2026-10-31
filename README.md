@@ -10,7 +10,7 @@ both are an archived October 2026 record, written in Portuguese).
 
 | Layer | Where | Propagation |
 |---|---|---|
-| Global rules + `/spec` and `/ship` skills | `global/` → symlinks in `~/.claude` | `git pull` in the kit (immediate) |
+| Global rules + `/spec`, `/ship` and `/receita-visual` skills | `global/` → symlinks in `~/.claude` | `git pull` in the kit (immediate) |
 | Hooks, `scripts/check`, lint, project CI | `template/` (Copier) | automatic weekly PR (`kit-update`) in each project |
 | Tests for the kit itself | `.github/workflows/kit-ci.yml`, `tests/` | every push |
 

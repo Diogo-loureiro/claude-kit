@@ -1,0 +1,1032 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#e9ebef">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0d0f12">
+  <title>Painel de exemplo</title>
+  <!--
+    Painel de exemplo da receita visual vidro e grafite (RECEITA-VISUAL.md, nesta pasta).
+    Dados fictícios. Tailwind 4 pelo CDN só para o exemplo abrir sozinho;
+    num app de verdade o mesmo CSS vai no globals.css / main.css.
+  -->
+  <script>
+    // Tema antes de pintar: a escolha salva vale; sem escolha, segue o sistema.
+    (function () {
+      try {
+        var salvo = localStorage.getItem('tema')
+        var escuro = salvo ? salvo === 'escuro' : matchMedia('(prefers-color-scheme: dark)').matches
+        document.documentElement.classList.toggle('dark', escuro)
+      } catch (e) {}
+    })()
+  </script>
+  <!-- cobre o instante antes do Tailwind do CDN compilar (sem isso a página pisca sem estilo) -->
+  <style>html { background: #e9ebef } html.dark { background: #0d0f12 }</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+    /* ---------- Tailwind 4: ligar o escuro por classe e os papéis de cor ---------- */
+    @custom-variant dark (&:where(.dark, .dark *));
+
+    @theme {
+      --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+      --animate-surgir: surgir 0.2s ease-out;
+      --animate-subir: subir 0.25s ease-out;
+      @keyframes surgir {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes subir {
+        from { transform: translateY(8px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+    }
+
+    @theme inline {
+      --color-tinta: var(--at-tinta);
+      --color-tinta-2: var(--at-tinta-2);
+      --color-tinta-3: var(--at-tinta-3);
+      --color-tinta-4: var(--at-tinta-4);
+      --color-acao: var(--at-acao);
+      --color-acao-hover: var(--at-acao-hover);
+      --color-acao-tinta: var(--at-acao-tinta);
+      --color-marca: var(--at-marca);
+      --color-marca-tinta: var(--at-marca-tinta);
+      --color-marca-fundo: var(--at-marca-fundo);
+      --color-divisa: var(--at-divisa);
+      --color-realce: var(--at-realce);
+      --color-realce-forte: var(--at-realce-forte);
+      --color-campo-hover: var(--at-campo-hover);
+      --color-campo-foco: var(--at-campo-foco);
+      --color-esqueleto: var(--at-esqueleto);
+      --color-trilho: var(--at-trilho);
+      --color-veu: var(--at-veu);
+      --color-foco: var(--at-foco);
+      --color-perigo: var(--at-perigo);
+      --color-perigo-fundo: var(--at-perigo-fundo);
+      --color-perigo-borda: var(--at-perigo-borda);
+      --color-perigo-solido: var(--at-perigo-solido);
+      --color-perigo-solido-hover: var(--at-perigo-solido-hover);
+      --color-atencao: var(--at-atencao);
+      --color-atencao-fundo: var(--at-atencao-fundo);
+      --color-atencao-borda: var(--at-atencao-borda);
+      --color-ok: var(--at-ok);
+      --color-ok-fundo: var(--at-ok-fundo);
+      --color-ok-borda: var(--at-ok-borda);
+      --color-marcado: var(--at-marcado);
+      --color-marcado-fundo: var(--at-marcado-fundo);
+      --color-marcado-borda: var(--at-marcado-borda);
+    }
+
+    /* ---------- Tokens: claro em :root, escuro em .dark ---------- */
+    :root {
+      color-scheme: light;
+
+      /* chão: o fundo da tela, com luz suave */
+      --at-chao: #e9ebef;
+      --at-chao-luz:
+        radial-gradient(1100px 620px at 8% -12%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0) 62%),
+        radial-gradient(900px 560px at 102% -6%, rgba(212, 219, 231, 0.9) 0%, rgba(212, 219, 231, 0) 60%),
+        radial-gradient(1000px 700px at 62% 118%, rgba(219, 226, 223, 0.95) 0%, rgba(219, 226, 223, 0) 62%),
+        linear-gradient(180deg, #f2f3f6 0%, #e5e7ec 100%);
+
+      /* vidro e superfícies */
+      --at-vidro: rgba(255, 255, 255, 0.6);
+      --at-vidro-forte: rgba(255, 255, 255, 0.9);
+      --at-vidro-borda: rgba(255, 255, 255, 0.78);
+      --at-campo: rgba(255, 255, 255, 0.72);
+      --at-campo-borda: rgba(17, 20, 24, 0.09);
+      --at-campo-hover: #ffffff;
+      --at-campo-foco: #a1a1aa;
+      --at-folha: rgba(255, 255, 255, 0.95);
+      --at-folha-borda: rgba(17, 20, 24, 0.06);
+      --at-secao: rgba(245, 246, 249, 0.86);
+      --at-divisa: rgba(17, 20, 24, 0.07);
+      --at-realce: rgba(17, 20, 24, 0.04);
+      --at-realce-forte: rgba(17, 20, 24, 0.05);
+      --at-esqueleto: rgba(17, 20, 24, 0.05);
+      --at-trilho: #cbd5e1;
+      --at-veu: rgba(15, 23, 42, 0.5);
+      --at-foco: rgba(24, 24, 27, 0.35);
+      --at-rolagem: rgba(17, 20, 24, 0.18);
+      --at-sombra-janela: 0 1px 1px rgba(17, 20, 24, 0.03), 0 18px 40px -22px rgba(17, 20, 24, 0.3);
+      --at-sombra-item: 0 1px 2px rgba(17, 20, 24, 0.06), 0 8px 18px -10px rgba(17, 20, 24, 0.24);
+      --at-brilho: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
+      /* tinta (texto), do mais forte ao mais apagado */
+      --at-tinta: #0f172a;
+      --at-tinta-2: #475569;
+      --at-tinta-3: #64748b;
+      --at-tinta-4: #94a3b8;
+
+      /* ação: grafite */
+      --at-acao: #18181b;
+      --at-acao-hover: #3f3f46;
+      --at-acao-tinta: #ffffff;
+
+      /* marca: troque pela do app (aqui, o verde Drone Sense) */
+      --at-marca: #006c49;
+      --at-marca-clara: #1f9e6e;
+      --at-marca-tinta: #004532;
+      --at-marca-fundo: rgba(0, 108, 73, 0.15);
+      --at-marca-sombra: rgba(0, 108, 73, 0.7);
+
+      /* tons com significado */
+      --at-perigo: #e11d48;
+      --at-perigo-fundo: rgba(255, 241, 242, 0.9);
+      --at-perigo-borda: rgba(254, 205, 211, 0.8);
+      --at-perigo-solido: #e11d48;
+      --at-perigo-solido-hover: #be123c;
+      --at-atencao: #b45309;
+      --at-atencao-fundo: rgba(255, 251, 235, 0.9);
+      --at-atencao-borda: rgba(253, 230, 138, 0.8);
+      --at-ok: #047857;
+      --at-ok-fundo: rgba(236, 253, 245, 0.9);
+      --at-ok-borda: rgba(167, 243, 208, 0.8);
+      --at-marcado: #4f46e5;
+      --at-marcado-fundo: rgba(238, 242, 255, 0.9);
+      --at-marcado-borda: rgba(199, 210, 254, 0.8);
+
+      /* gráficos */
+      --at-grafico-fundo: #f6f7f9;
+      --at-grade: rgba(17, 20, 24, 0.07);
+      --at-eixo: rgba(17, 20, 24, 0.22);
+      --at-serie-destaque: #18181b;
+      --at-serie-contexto: #a1a1aa;
+      --at-serie-1: #2a78d6;
+      --at-serie-2: #eb6834;
+      --at-serie-3: #1baf7a;
+      --at-serie-4: #eda100;
+      --at-serie-5: #e87ba4;
+      --at-serie-6: #008300;
+      --at-serie-7: #4a3aa7;
+      --at-serie-8: #e34948;
+      --at-seq-1: #cde2fb;
+      --at-seq-2: #9ec5f4;
+      --at-seq-3: #6da7ec;
+      --at-seq-4: #3987e5;
+      --at-seq-5: #256abf;
+      --at-seq-6: #184f95;
+      --at-seq-7: #0d366b;
+    }
+
+    .dark {
+      color-scheme: dark;
+      --at-chao: #0d0f12;
+      --at-chao-luz:
+        radial-gradient(1000px 600px at 6% -14%, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0) 60%),
+        radial-gradient(900px 560px at 104% -8%, rgba(120, 138, 168, 0.14) 0%, rgba(120, 138, 168, 0) 60%),
+        radial-gradient(900px 640px at 60% 120%, rgba(70, 110, 95, 0.12) 0%, rgba(70, 110, 95, 0) 60%),
+        linear-gradient(180deg, #131518 0%, #0b0c0e 100%);
+      --at-vidro: rgba(30, 33, 39, 0.58);
+      --at-vidro-forte: rgba(54, 59, 68, 0.74);
+      --at-vidro-borda: rgba(255, 255, 255, 0.07);
+      --at-campo: rgba(255, 255, 255, 0.05);
+      --at-campo-borda: rgba(255, 255, 255, 0.09);
+      --at-campo-hover: rgba(255, 255, 255, 0.1);
+      --at-campo-foco: #71717a;
+      --at-folha: rgba(255, 255, 255, 0.07);
+      --at-folha-borda: rgba(255, 255, 255, 0.1);
+      --at-secao: rgba(27, 30, 35, 0.9);
+      --at-divisa: rgba(255, 255, 255, 0.07);
+      --at-realce: rgba(255, 255, 255, 0.045);
+      --at-realce-forte: rgba(255, 255, 255, 0.1);
+      --at-esqueleto: rgba(255, 255, 255, 0.1);
+      --at-trilho: #52525b;
+      --at-foco: rgba(255, 255, 255, 0.4);
+      --at-rolagem: rgba(255, 255, 255, 0.14);
+      --at-sombra-janela: 0 1px 1px rgba(0, 0, 0, 0.3), 0 18px 40px -20px rgba(0, 0, 0, 0.7);
+      --at-sombra-item: 0 1px 2px rgba(0, 0, 0, 0.35), 0 8px 18px -10px rgba(0, 0, 0, 0.6);
+      --at-brilho: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      --at-tinta: #fafafa;
+      --at-tinta-2: #d4d4d8;
+      --at-tinta-3: #a1a1aa;
+      --at-tinta-4: #71717a;
+      --at-acao: #f4f4f5;
+      --at-acao-hover: #ffffff;
+      --at-acao-tinta: #18181b;
+      --at-marca-tinta: #1f9e6e;
+      --at-perigo: #fb7185;
+      --at-perigo-fundo: rgba(244, 63, 94, 0.1);
+      --at-perigo-borda: rgba(244, 63, 94, 0.25);
+      --at-atencao: #fbbf24;
+      --at-atencao-fundo: rgba(245, 158, 11, 0.1);
+      --at-atencao-borda: rgba(245, 158, 11, 0.25);
+      --at-ok: #34d399;
+      --at-ok-fundo: rgba(16, 185, 129, 0.1);
+      --at-ok-borda: rgba(16, 185, 129, 0.25);
+      --at-marcado: #a5b4fc;
+      --at-marcado-fundo: rgba(99, 102, 241, 0.1);
+      --at-marcado-borda: rgba(129, 140, 248, 0.25);
+      --at-grafico-fundo: #17191e;
+      --at-grade: rgba(255, 255, 255, 0.07);
+      --at-eixo: rgba(255, 255, 255, 0.2);
+      --at-serie-destaque: #f4f4f5;
+      --at-serie-contexto: #52525b;
+      --at-serie-1: #3987e5;
+      --at-serie-2: #d95926;
+      --at-serie-3: #199e70;
+      --at-serie-4: #c98500;
+      --at-serie-5: #d55181;
+      --at-serie-6: #008300;
+      --at-serie-7: #9085e9;
+      --at-serie-8: #e66767;
+      --at-seq-1: #0d366b;
+      --at-seq-2: #184f95;
+      --at-seq-3: #256abf;
+      --at-seq-4: #3987e5;
+      --at-seq-5: #6da7ec;
+      --at-seq-6: #9ec5f4;
+      --at-seq-7: #cde2fb;
+    }
+
+    @layer base {
+      html {
+        font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      body {
+        color: var(--at-tinta);
+        background-color: var(--at-chao);
+      }
+      :where(a, button, summary, [role="button"], [tabindex]:not(input, select, textarea)):focus-visible {
+        outline: 2px solid var(--at-foco);
+        outline-offset: 2px;
+      }
+      /* iPhone dá zoom ao focar campo com fonte menor que 16px */
+      @supports (-webkit-touch-callout: none) {
+        @media (max-width: 639px) {
+          input, textarea, select { font-size: 16px !important; }
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *, ::before, ::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    }
+
+    @layer components {
+      .fundo-app {
+        background: var(--at-chao-luz);
+        background-color: var(--at-chao);
+      }
+      .vidro {
+        background: var(--at-vidro);
+        -webkit-backdrop-filter: blur(24px) saturate(160%);
+        backdrop-filter: blur(24px) saturate(160%);
+        border: 1px solid var(--at-vidro-borda);
+        box-shadow: var(--at-sombra-janela), var(--at-brilho);
+      }
+      .vidro-forte {
+        background: var(--at-vidro-forte);
+        -webkit-backdrop-filter: blur(28px) saturate(160%);
+        backdrop-filter: blur(28px) saturate(160%);
+        border: 1px solid var(--at-vidro-borda);
+        box-shadow: var(--at-sombra-janela);
+      }
+      .campo {
+        background: var(--at-campo);
+        border: 1px solid var(--at-campo-borda);
+      }
+      .folha {
+        background: var(--at-folha);
+        border: 1px solid var(--at-folha-borda);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      }
+      .item-sel {
+        background: var(--at-vidro-forte);
+        box-shadow: var(--at-sombra-item);
+      }
+      .fundo-secao {
+        background: var(--at-secao);
+        -webkit-backdrop-filter: blur(14px);
+        backdrop-filter: blur(14px);
+      }
+      .marca-logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(to bottom right, var(--at-marca-clara), var(--at-marca));
+        color: #fff;
+        font-weight: 700;
+        letter-spacing: 0.025em;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 6px 14px -8px var(--at-marca-sombra);
+      }
+      .rolagem-fina { scrollbar-width: thin; scrollbar-color: var(--at-rolagem) transparent; }
+      .rolagem-fina::-webkit-scrollbar { width: 8px; height: 8px; }
+      .rolagem-fina::-webkit-scrollbar-thumb { border-radius: 9999px; background: var(--at-rolagem); }
+      .rolagem-fina::-webkit-scrollbar-track { background: transparent; }
+      .rolagem-oculta { scrollbar-width: none; }
+      .rolagem-oculta::-webkit-scrollbar { display: none; }
+    }
+
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+      .vidro, .vidro-forte { background: var(--at-vidro-forte); }
+    }
+  </style>
+</head>
+
+<body class="fundo-app">
+  <div class="flex h-dvh overflow-hidden">
+    <!-- fundo da gaveta (só no celular, com a gaveta aberta) -->
+    <div id="veu-gaveta" class="fixed inset-0 z-30 hidden bg-black/30 backdrop-blur-[2px] lg:hidden"></div>
+
+    <!-- Barra lateral: janela de vidro (no celular vira gaveta) -->
+    <aside id="gaveta" class="vidro fixed inset-y-0 left-0 z-40 flex w-64 shrink-0 -translate-x-full flex-col overflow-y-auto rolagem-oculta transition-transform duration-200 lg:static lg:z-auto lg:my-3 lg:ml-3 lg:w-60 lg:translate-x-0 lg:rounded-[18px]">
+      <!-- a cor da marca fica aqui (e nos avisos de novidade) -->
+      <div class="flex items-center gap-3 px-5 pb-4 pt-[calc(1.25rem+env(safe-area-inset-top))] lg:pt-5">
+        <div class="marca-logo h-9 w-9 rounded-[11px] text-[13px]">DS</div>
+        <div class="leading-tight">
+          <p class="text-[15px] font-semibold tracking-tight text-tinta">Drone Sense</p>
+          <p class="text-xs text-tinta-3">Operações</p>
+        </div>
+      </div>
+
+      <p class="px-6 pb-1.5 text-xs font-semibold text-tinta-3">Painel</p>
+      <nav aria-label="Painel" class="space-y-0.5 px-3">
+        <a href="#" aria-current="page" class="item-sel flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-tinta">
+          <i data-ic="painel" class="h-[18px] w-[18px] shrink-0"></i>
+          <span class="min-w-0 flex-1 truncate">Visão geral</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-tinta-2 transition-colors hover:bg-realce">
+          <i data-ic="voo" class="h-[18px] w-[18px] shrink-0"></i>
+          <span class="min-w-0 flex-1 truncate">Voos</span>
+          <span class="min-w-[24px] rounded-full px-2 py-0.5 text-center text-xs font-semibold tabular-nums text-tinta-3">318</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-tinta-2 transition-colors hover:bg-realce">
+          <i data-ic="clientes" class="h-[18px] w-[18px] shrink-0"></i>
+          <span class="min-w-0 flex-1 truncate">Clientes</span>
+          <span class="flex h-[19px] min-w-[19px] items-center justify-center rounded-full bg-marca px-1.5 text-[11px] font-bold tabular-nums text-white" aria-label="3 novos">3</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-tinta-2 transition-colors hover:bg-realce">
+          <i data-ic="mapa" class="h-[18px] w-[18px] shrink-0"></i>
+          <span class="min-w-0 flex-1 truncate">Mapa das áreas</span>
+        </a>
+      </nav>
+
+      <p class="mt-5 px-6 pb-1.5 text-xs font-semibold text-tinta-3">Mais</p>
+      <nav aria-label="Outros módulos" class="space-y-0.5 px-3">
+        <a href="#" class="flex items-center gap-3 rounded-xl px-3 py-2 text-[13px] font-medium text-tinta-3 transition-colors hover:bg-realce">
+          <i data-ic="financeiro" class="h-4 w-4 shrink-0"></i> Financeiro
+        </a>
+        <a href="#" class="flex items-center gap-3 rounded-xl px-3 py-2 text-[13px] font-medium text-tinta-3 transition-colors hover:bg-realce">
+          <i data-ic="relatorios" class="h-4 w-4 shrink-0"></i> Relatórios
+        </a>
+        <a href="#" class="flex items-center gap-3 rounded-xl px-3 py-2 text-[13px] font-medium text-tinta-3 transition-colors hover:bg-realce">
+          <i data-ic="config" class="h-4 w-4 shrink-0"></i> Configurações
+        </a>
+      </nav>
+
+      <!-- rodapé: pessoa, tema -->
+      <div class="mx-3 mt-auto flex items-center gap-0.5 border-t border-divisa pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 lg:pb-3">
+        <a href="#" class="flex min-w-0 flex-1 items-center gap-2.5 rounded-xl p-2 transition-colors hover:bg-realce">
+          <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-marca-fundo text-xs font-semibold text-marca-tinta">UD</span>
+          <span class="min-w-0 leading-tight">
+            <span class="block truncate text-sm font-semibold text-tinta">Usuário Demo</span>
+            <span class="text-[11px] font-medium text-tinta-3">Admin</span>
+          </span>
+        </a>
+        <button id="alternar-tema" type="button" class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-tinta-3 transition-colors hover:bg-realce" aria-label="Tema escuro" title="Tema escuro">
+          <i data-ic="lua" class="h-4 w-4"></i>
+        </button>
+      </div>
+    </aside>
+
+    <div class="flex min-w-0 flex-1 flex-col overflow-hidden">
+      <!-- topo, só no celular: também é uma janela de vidro -->
+      <header class="vidro mx-2 mt-[calc(0.5rem+env(safe-area-inset-top))] flex items-center gap-3 rounded-2xl px-3 py-2.5 lg:hidden">
+        <button id="abrir-gaveta" type="button" aria-label="Abrir menu" class="-m-1 rounded-lg p-1 transition-colors hover:bg-realce">
+          <i data-ic="menu" class="h-6 w-6 text-tinta-2"></i>
+        </button>
+        <span class="marca-logo h-7 w-7 rounded-lg text-[11px]">DS</span>
+        <p class="font-semibold tracking-tight text-tinta">Drone Sense</p>
+      </header>
+
+      <main class="min-h-0 flex-1 overflow-y-auto rolagem-fina p-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] lg:p-3">
+        <div class="mx-auto max-w-[1360px] space-y-2 lg:space-y-3">
+
+          <!-- cabeçalho da página: direto no chão, filtros numa linha acima de tudo que eles mudam -->
+          <div class="flex flex-wrap items-end justify-between gap-3 px-1 pt-2">
+            <div>
+              <h1 class="text-xl font-semibold tracking-tight text-tinta">Visão geral</h1>
+              <p id="subtitulo" class="mt-0.5 text-[13px] text-tinta-3">Últimos 30 dias · dados fictícios</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <div role="group" aria-label="Período" class="flex gap-1.5" id="periodos">
+                <button type="button" data-periodo="7" aria-pressed="false" class="h-9 rounded-full px-3.5 text-[13px] font-semibold transition-colors">7 dias</button>
+                <button type="button" data-periodo="30" aria-pressed="true" class="h-9 rounded-full px-3.5 text-[13px] font-semibold transition-colors">30 dias</button>
+                <button type="button" data-periodo="90" aria-pressed="false" class="h-9 rounded-full px-3.5 text-[13px] font-semibold transition-colors">90 dias</button>
+              </div>
+              <select aria-label="Região" class="campo h-9 rounded-xl px-3 text-[13px] font-medium text-tinta outline-none focus:border-campo-foco">
+                <option>Todas as regiões</option>
+                <option>Sul de Minas</option>
+                <option>Triângulo Mineiro</option>
+                <option>Oeste Paulista</option>
+              </select>
+              <button id="abrir-exportar" type="button" class="inline-flex h-9 items-center gap-2 rounded-xl bg-acao px-4 text-[13px] font-semibold text-acao-tinta transition-colors hover:bg-acao-hover">
+                <i data-ic="baixar" class="h-4 w-4"></i> Exportar
+              </button>
+            </div>
+          </div>
+
+          <!-- aviso: uma frase, o tom no ícone, a ação que resolve -->
+          <div role="status" class="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-xl border border-atencao-borda bg-atencao-fundo px-3.5 py-2.5 text-[13px]">
+            <i data-ic="alerta" class="h-4 w-4 shrink-0 text-atencao"></i>
+            <p class="min-w-[12rem] flex-1 text-tinta">2 voos estão sem relatório há mais de 3 dias.</p>
+            <button type="button" class="campo h-7 rounded-lg px-2.5 text-xs font-semibold text-tinta transition-colors hover:bg-campo-hover">Ver voos</button>
+          </div>
+
+          <!-- indicadores: cada um é uma janela -->
+          <div class="grid grid-cols-2 gap-2 lg:gap-3 xl:grid-cols-4">
+            <section class="vidro rounded-[18px] p-4 lg:p-5">
+              <p class="text-[13px] font-medium text-tinta-3">Hectares aplicados</p>
+              <p class="mt-1.5 text-2xl font-semibold leading-tight tracking-tight text-tinta lg:text-[28px]">12.480</p>
+              <div class="mt-2 flex items-end justify-between gap-3">
+                <p class="flex flex-wrap items-center gap-1 text-xs font-semibold text-ok"><i data-ic="sobe" class="h-3.5 w-3.5"></i>+8,2% <span class="font-medium text-tinta-3">vs. setembro</span></p>
+                <svg class="h-8 w-20 shrink-0 max-sm:hidden" data-spark="[620,700,680,760,740,820,880,860,930,910,990,1040]" aria-hidden="true"></svg>
+              </div>
+            </section>
+            <section class="vidro rounded-[18px] p-4 lg:p-5">
+              <p class="text-[13px] font-medium text-tinta-3">Voos realizados</p>
+              <p class="mt-1.5 text-2xl font-semibold leading-tight tracking-tight text-tinta lg:text-[28px]">318</p>
+              <div class="mt-2 flex items-end justify-between gap-3">
+                <p class="flex flex-wrap items-center gap-1 text-xs font-semibold text-ok"><i data-ic="sobe" class="h-3.5 w-3.5"></i>+4,1% <span class="font-medium text-tinta-3">vs. setembro</span></p>
+                <svg class="h-8 w-20 shrink-0 max-sm:hidden" data-spark="[22,25,24,27,26,28,27,29,28,30,29,31]" aria-hidden="true"></svg>
+              </div>
+            </section>
+            <section class="vidro rounded-[18px] p-4 lg:p-5">
+              <p class="text-[13px] font-medium text-tinta-3">Matrículas no mês</p>
+              <p class="mt-1.5 text-2xl font-semibold leading-tight tracking-tight text-tinta lg:text-[28px]">46</p>
+              <div class="mt-2 flex items-end justify-between gap-3">
+                <p class="flex flex-wrap items-center gap-1 text-xs font-semibold text-perigo"><i data-ic="desce" class="h-3.5 w-3.5"></i>−3,0% <span class="font-medium text-tinta-3">vs. setembro</span></p>
+                <svg class="h-8 w-20 shrink-0 max-sm:hidden" data-spark="[5,4,6,5,4,4,3,5,4,3,4,3]" aria-hidden="true"></svg>
+              </div>
+            </section>
+            <section class="vidro rounded-[18px] p-4 lg:p-5">
+              <p class="text-[13px] font-medium text-tinta-3">Faturamento</p>
+              <p class="mt-1.5 text-2xl font-semibold leading-tight tracking-tight text-tinta lg:text-[28px]">R$ 286 mil</p>
+              <div class="mt-2 flex items-end justify-between gap-3">
+                <p class="flex flex-wrap items-center gap-1 text-xs font-semibold text-ok"><i data-ic="sobe" class="h-3.5 w-3.5"></i>+12% <span class="font-medium text-tinta-3">vs. setembro</span></p>
+                <svg class="h-8 w-20 shrink-0 max-sm:hidden" data-spark="[18,19,21,20,22,23,22,24,25,24,26,27]" aria-hidden="true"></svg>
+              </div>
+            </section>
+          </div>
+
+          <!-- gráficos -->
+          <div class="grid gap-2 lg:gap-3 xl:grid-cols-3">
+            <section class="vidro rounded-[18px] xl:col-span-2">
+              <header class="flex items-start justify-between gap-3 px-4 pt-4 lg:px-5">
+                <div>
+                  <h2 class="text-[15px] font-semibold tracking-tight text-tinta">Hectares aplicados por semana</h2>
+                  <p class="mt-0.5 text-xs text-tinta-3">Últimas 12 semanas, todas as regiões</p>
+                </div>
+                <button type="button" data-tabela="g-linha" aria-pressed="false" class="campo inline-flex h-8 shrink-0 items-center gap-1.5 rounded-[10px] px-2.5 text-xs font-semibold text-tinta-2 transition-colors hover:bg-campo-hover">
+                  <i data-ic="tabela" class="h-3.5 w-3.5"></i> Tabela
+                </button>
+              </header>
+              <div id="g-linha" class="relative px-2 pb-3 pt-2 lg:px-3"></div>
+            </section>
+
+            <section class="vidro rounded-[18px]">
+              <header class="flex items-start justify-between gap-3 px-4 pt-4 lg:px-5">
+                <div>
+                  <h2 class="text-[15px] font-semibold tracking-tight text-tinta">Área por cultura</h2>
+                  <p class="mt-0.5 text-xs text-tinta-3">Hectares por mês</p>
+                </div>
+                <button type="button" data-tabela="g-colunas" aria-pressed="false" class="campo inline-flex h-8 shrink-0 items-center gap-1.5 rounded-[10px] px-2.5 text-xs font-semibold text-tinta-2 transition-colors hover:bg-campo-hover">
+                  <i data-ic="tabela" class="h-3.5 w-3.5"></i> Tabela
+                </button>
+              </header>
+              <!-- legenda: sempre que houver 2 ou mais séries -->
+              <ul id="legenda-colunas" class="flex flex-wrap gap-x-3.5 gap-y-1 px-4 pt-3 text-xs text-tinta-2 lg:px-5"></ul>
+              <div id="g-colunas" class="relative px-2 pb-3 pt-1 lg:px-3"></div>
+            </section>
+          </div>
+
+          <!-- tabela e estado vazio -->
+          <div class="grid gap-2 lg:gap-3 xl:grid-cols-3">
+            <section id="janela-voos" class="vidro rounded-[18px] xl:col-span-2">
+              <header class="flex flex-wrap items-center justify-between gap-3 px-4 pb-3 pt-4 lg:px-5">
+                <div>
+                  <h2 class="text-[15px] font-semibold tracking-tight text-tinta">Últimos voos</h2>
+                  <p class="mt-0.5 text-xs text-tinta-3">6 de 318 no período</p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <label class="campo flex h-9 w-56 max-w-full items-center gap-2 rounded-xl px-3 transition-colors focus-within:border-campo-foco max-sm:hidden">
+                    <i data-ic="busca" class="h-4 w-4 shrink-0 text-tinta-4"></i>
+                    <input aria-label="Buscar cliente" placeholder="Buscar cliente" class="min-w-0 flex-1 bg-transparent text-sm text-tinta outline-none placeholder:text-tinta-4">
+                  </label>
+                  <button id="abrir-menu" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="menu" aria-label="Opções da tabela" class="campo flex h-9 w-9 items-center justify-center rounded-xl text-tinta-2 transition-colors hover:bg-campo-hover">
+                    <i data-ic="mais" class="h-4 w-4"></i>
+                  </button>
+                </div>
+              </header>
+              <div class="overflow-x-auto rolagem-fina pb-2">
+                <table class="w-full min-w-[580px] text-sm">
+                  <thead>
+                    <tr class="border-y border-divisa">
+                      <th scope="col" class="px-4 py-2.5 text-left text-xs font-semibold text-tinta-3 lg:pl-5">Data</th>
+                      <th scope="col" class="px-4 py-2.5 text-left text-xs font-semibold text-tinta-3">Cliente</th>
+                      <th scope="col" class="px-4 py-2.5 text-left text-xs font-semibold text-tinta-3">Cultura</th>
+                      <th scope="col" class="px-4 py-2.5 text-right text-xs font-semibold text-tinta-3">Área (ha)</th>
+                      <th scope="col" class="px-4 py-2.5 text-left text-xs font-semibold text-tinta-3 lg:pr-5">Situação</th>
+                    </tr>
+                  </thead>
+                  <tbody id="linhas-voos"></tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="vidro flex flex-col rounded-[18px]">
+              <header class="px-4 pt-4 lg:px-5">
+                <h2 class="text-[15px] font-semibold tracking-tight text-tinta">Alertas</h2>
+              </header>
+              <!-- estado vazio: ícone num campo, frase curta, nada de cor -->
+              <div class="flex flex-1 flex-col items-center justify-center gap-3 px-6 py-10 text-center">
+                <div class="campo flex h-14 w-14 items-center justify-center rounded-2xl text-tinta-3">
+                  <i data-ic="sino" class="h-7 w-7"></i>
+                </div>
+                <p class="text-lg font-semibold tracking-tight text-tinta">Nenhum alerta agora</p>
+                <p class="max-w-xs text-sm text-tinta-3">Quando um voo precisar de você, ele aparece aqui.</p>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Janela de diálogo: no celular sobe de baixo (folha); no computador, centralizada -->
+  <div id="modal" class="fixed inset-0 z-50 hidden items-end justify-center bg-veu backdrop-blur-sm sm:items-center sm:p-4">
+    <div role="dialog" aria-modal="true" aria-labelledby="modal-titulo" tabindex="-1" class="vidro-forte flex max-h-[90dvh] w-full max-w-md animate-subir flex-col rounded-t-2xl outline-none sm:max-h-[85vh] sm:rounded-2xl">
+      <div class="flex items-start justify-between gap-4 px-5 pb-3 pt-5 sm:px-6 sm:pt-6">
+        <h3 id="modal-titulo" class="text-lg font-semibold tracking-tight text-tinta">Exportar relatório</h3>
+        <button type="button" data-fechar aria-label="Fechar" class="-my-1.5 -mr-2 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-tinta-4 transition-colors hover:bg-realce hover:text-tinta-2">
+          <i data-ic="x" class="h-5 w-5"></i>
+        </button>
+      </div>
+      <div class="space-y-4 overflow-y-auto px-5 text-sm text-tinta-2 sm:px-6">
+        <p>O relatório leva os números e os gráficos do período escolhido.</p>
+        <label class="flex flex-col gap-1 text-xs font-semibold text-tinta-3">
+          Nome do arquivo
+          <input id="nome-arquivo" value="operacoes-outubro" class="campo h-10 rounded-xl px-3 text-sm font-normal text-tinta outline-none placeholder:text-tinta-4 focus:border-campo-foco">
+        </label>
+        <label class="flex flex-col gap-1 text-xs font-semibold text-tinta-3">
+          Formato
+          <select class="campo h-10 rounded-xl px-3 text-sm font-normal text-tinta outline-none focus:border-campo-foco">
+            <option>PDF</option>
+            <option>Planilha (CSV)</option>
+          </select>
+        </label>
+        <div class="flex items-center justify-between gap-3">
+          <span id="rotulo-graficos" class="text-sm text-tinta">Incluir os gráficos</span>
+          <button id="interruptor" type="button" role="switch" aria-checked="true" aria-labelledby="rotulo-graficos" class="relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors">
+            <span class="inline-block h-5 w-5 rounded-full shadow transition-transform"></span>
+          </button>
+        </div>
+      </div>
+      <div class="flex justify-end gap-2 px-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] pt-5 sm:px-6 sm:pb-6">
+        <button type="button" data-fechar class="campo h-10 rounded-xl px-4 text-sm font-semibold text-tinta transition-colors hover:bg-campo-hover">Cancelar</button>
+        <button id="confirmar-exportar" type="button" class="h-10 rounded-xl bg-acao px-4 text-sm font-semibold text-acao-tinta transition-colors hover:bg-acao-hover">Exportar</button>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    Camadas que flutuam (menu, dica do gráfico) moram aqui fora, no <body>, com position: fixed.
+    Dentro de uma .vidro o desfoque não funciona: a janela vira a "raiz" do backdrop-filter
+    e o conteúdo atrás do menu aparece nítido. (No React: createPortal; no Vue: <Teleport to="body">.)
+  -->
+  <div id="menu" role="menu" aria-label="Opções da tabela" class="vidro-forte fixed z-50 hidden w-52 overflow-hidden rounded-xl py-1">
+    <button type="button" role="menuitem" data-aviso="Planilha baixada." class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-tinta transition-colors hover:bg-realce-forte">
+      <i data-ic="baixar" class="h-4 w-4 text-tinta-3"></i> Baixar planilha
+    </button>
+    <button type="button" role="menuitem" data-aviso="Link copiado." class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-tinta transition-colors hover:bg-realce-forte">
+      <i data-ic="compartilhar" class="h-4 w-4 text-tinta-3"></i> Compartilhar
+    </button>
+    <div class="my-1 border-t border-divisa"></div>
+    <button id="remover-tabela" type="button" role="menuitem" class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-perigo transition-colors hover:bg-perigo-fundo">
+      <i data-ic="lixeira" class="h-4 w-4"></i> Tirar da tela
+    </button>
+  </div>
+  <div id="dica" role="status" aria-live="polite" hidden class="vidro-forte pointer-events-none fixed z-50 min-w-[8.5rem] rounded-xl px-3 py-2 text-xs"></div>
+
+  <!-- avisos rápidos (toasts): embaixo, vidro forte, com "Desfazer" quando dá pra voltar -->
+  <div id="toasts" aria-label="Notificações" class="pointer-events-none fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] left-4 right-4 z-[60] flex flex-col gap-2 sm:left-auto sm:right-4 sm:w-full sm:max-w-sm"></div>
+
+  <script>
+    // ---------- ícones (lucide, traço 2) ----------
+    const ICONES = {
+      painel: '<rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>',
+      voo: '<polygon points="3 11 22 2 13 21 11 13 3 11"/>',
+      clientes: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+      mapa: '<path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z"/><path d="M15 5.764v15"/><path d="M9 3.236v15"/>',
+      financeiro: '<path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/>',
+      relatorios: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/>',
+      config: '<path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/>',
+      lua: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+      sol: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>',
+      menu: '<line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>',
+      x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+      mais: '<circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>',
+      baixar: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/>',
+      alerta: '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+      sobe: '<polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>',
+      desce: '<polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/>',
+      tabela: '<path d="M12 3v18"/><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/>',
+      grafico: '<path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/>',
+      sino: '<path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/>',
+      ok: '<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
+      relogio: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+      cancelado: '<circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/>',
+      compartilhar: '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/>',
+      lixeira: '<path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/>',
+      busca: '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+    }
+    function svgIcone(nome, classe) {
+      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="${classe}" aria-hidden="true">${ICONES[nome] || ''}</svg>`
+    }
+    function trocarIcones(raiz = document) {
+      raiz.querySelectorAll('i[data-ic]').forEach((i) => { i.outerHTML = svgIcone(i.dataset.ic, i.className) })
+    }
+
+    // ---------- números ----------
+    const fmt = new Intl.NumberFormat('pt-BR')
+    const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
+
+    // ---------- tema ----------
+    const botaoTema = document.getElementById('alternar-tema')
+    function pintarBotaoTema() {
+      const escuro = document.documentElement.classList.contains('dark')
+      const rotulo = escuro ? 'Tema claro' : 'Tema escuro'
+      botaoTema.innerHTML = svgIcone(escuro ? 'sol' : 'lua', 'h-4 w-4')
+      botaoTema.setAttribute('aria-label', rotulo)
+      botaoTema.title = rotulo
+    }
+    botaoTema.addEventListener('click', () => {
+      const escuro = !document.documentElement.classList.contains('dark')
+      document.documentElement.classList.toggle('dark', escuro)
+      try { localStorage.setItem('tema', escuro ? 'escuro' : 'claro') } catch (e) {}
+      pintarBotaoTema()
+    })
+
+    // ---------- gaveta (celular) ----------
+    const gaveta = document.getElementById('gaveta')
+    const veuGaveta = document.getElementById('veu-gaveta')
+    const telaLarga = matchMedia('(min-width: 1024px)')
+    function gavetaAberta(aberta) {
+      gaveta.classList.toggle('-translate-x-full', !aberta)
+      gaveta.classList.toggle('translate-x-0', aberta)
+      veuGaveta.classList.toggle('hidden', !aberta)
+      // fechada no celular: fora da tela e fora do Tab
+      if (!aberta && !telaLarga.matches) gaveta.setAttribute('inert', '')
+      else gaveta.removeAttribute('inert')
+    }
+    document.getElementById('abrir-gaveta').addEventListener('click', () => gavetaAberta(true))
+    veuGaveta.addEventListener('click', () => gavetaAberta(false))
+    telaLarga.addEventListener('change', () => gavetaAberta(false))
+    gavetaAberta(false)
+
+    // ---------- período (pílulas: ligada = grafite) ----------
+    const PILULA_LIGADA = ['bg-acao', 'text-acao-tinta']
+    const PILULA_DESLIGADA = ['campo', 'text-tinta-2', 'hover:bg-campo-hover']
+    function pintarPeriodos() {
+      document.querySelectorAll('#periodos button').forEach((b) => {
+        const ligada = b.getAttribute('aria-pressed') === 'true'
+        b.classList.remove(...PILULA_LIGADA, ...PILULA_DESLIGADA)
+        b.classList.add(...(ligada ? PILULA_LIGADA : PILULA_DESLIGADA))
+      })
+    }
+    document.querySelectorAll('#periodos button').forEach((b) => b.addEventListener('click', () => {
+      document.querySelectorAll('#periodos button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)))
+      document.getElementById('subtitulo').textContent = `Últimos ${b.dataset.periodo} dias · dados fictícios`
+      pintarPeriodos()
+    }))
+    pintarPeriodos()
+
+    // ---------- menu suspenso ----------
+    const botaoMenu = document.getElementById('abrir-menu')
+    const menu = document.getElementById('menu')
+    function menuAberto(aberto) {
+      if (aberto) {
+        // ancora no botão: embaixo dele, alinhado pela direita
+        const r = botaoMenu.getBoundingClientRect()
+        menu.style.top = `${r.bottom + 4}px`
+        menu.style.right = `${window.innerWidth - r.right}px`
+      }
+      menu.classList.toggle('hidden', !aberto)
+      botaoMenu.setAttribute('aria-expanded', String(aberto))
+    }
+    botaoMenu.addEventListener('click', (e) => { e.stopPropagation(); menuAberto(menu.classList.contains('hidden')) })
+    document.addEventListener('click', (e) => { if (!menu.contains(e.target)) menuAberto(false) })
+    document.querySelector('main').addEventListener('scroll', () => menuAberto(false), { passive: true })
+    window.addEventListener('resize', () => menuAberto(false))
+
+    // ---------- avisos rápidos ----------
+    const TOM_TOAST = { ok: ['ok', 'text-ok'], perigo: ['cancelado', 'text-perigo'], atencao: ['alerta', 'text-atencao'], info: ['sino', 'text-tinta-3'] }
+    function avisar(mensagem, { tom = 'ok', acao, aoAgir } = {}) {
+      const caixa = document.getElementById('toasts')
+      const t = document.createElement('div')
+      t.setAttribute('role', tom === 'perigo' ? 'alert' : 'status')
+      t.className = 'vidro-forte pointer-events-auto flex translate-x-4 items-start gap-3 rounded-2xl p-3.5 opacity-0 transition duration-200 ease-out'
+      const [icone, cor] = TOM_TOAST[tom]
+      t.innerHTML = `${svgIcone(icone, `mt-0.5 h-5 w-5 shrink-0 ${cor}`)}
+        <p class="flex-1 text-sm text-tinta"></p>
+        ${acao ? `<button type="button" data-acao class="-my-1.5 shrink-0 rounded-lg px-2.5 py-1.5 text-sm font-semibold text-tinta underline decoration-tinta-4 underline-offset-4 transition-colors hover:bg-realce-forte">${esc(acao)}</button>` : ''}
+        <button type="button" data-fechar aria-label="Fechar aviso" class="-my-2 -mr-2 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-tinta-4 transition-colors hover:bg-realce-forte hover:text-tinta-2">${svgIcone('x', 'h-4 w-4')}</button>`
+      t.querySelector('p').textContent = mensagem
+      const fechar = () => { t.classList.add('translate-x-4', 'opacity-0'); setTimeout(() => t.remove(), 160) }
+      t.querySelector('[data-fechar]').addEventListener('click', fechar)
+      t.querySelector('[data-acao]')?.addEventListener('click', () => { fechar(); aoAgir?.() })
+      caixa.appendChild(t)
+      requestAnimationFrame(() => t.classList.remove('translate-x-4', 'opacity-0'))
+      setTimeout(fechar, 6000)
+    }
+
+    menu.querySelectorAll('[data-aviso]').forEach((b) => b.addEventListener('click', () => {
+      menuAberto(false)
+      avisar(b.dataset.aviso)
+    }))
+    document.getElementById('remover-tabela').addEventListener('click', () => {
+      menuAberto(false)
+      const janela = document.getElementById('janela-voos')
+      janela.classList.add('hidden')
+      avisar('Últimos voos saiu da tela.', { tom: 'info', acao: 'Desfazer', aoAgir: () => janela.classList.remove('hidden') })
+    })
+
+    // ---------- janela de diálogo ----------
+    const modal = document.getElementById('modal')
+    const painelModal = modal.querySelector('[role="dialog"]')
+    let focoAntes = null
+    let comecouNoFundo = false
+    function modalAberto(aberto) {
+      if (aberto) {
+        focoAntes = document.activeElement
+        modal.classList.remove('hidden')
+        modal.classList.add('flex')
+        document.getElementById('nome-arquivo').focus({ preventScroll: true })
+      } else {
+        modal.classList.add('hidden')
+        modal.classList.remove('flex')
+        focoAntes?.focus?.({ preventScroll: true })
+      }
+    }
+    document.getElementById('abrir-exportar').addEventListener('click', () => modalAberto(true))
+    modal.querySelectorAll('[data-fechar]').forEach((b) => b.addEventListener('click', () => modalAberto(false)))
+    // fecha pelo fundo só se o toque começou no fundo (selecionar texto e soltar fora não fecha)
+    modal.addEventListener('pointerdown', (e) => { comecouNoFundo = e.target === modal })
+    modal.addEventListener('click', (e) => { if (comecouNoFundo && e.target === modal) modalAberto(false) })
+    document.getElementById('confirmar-exportar').addEventListener('click', () => {
+      const nome = document.getElementById('nome-arquivo').value.trim() || 'relatorio'
+      modalAberto(false)
+      avisar(`Relatório exportado: ${nome}.pdf`)
+    })
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return
+      if (!modal.classList.contains('hidden')) modalAberto(false)
+      else if (!menu.classList.contains('hidden')) menuAberto(false)
+      else gavetaAberta(false)
+    })
+
+    // ---------- interruptor: ligado = grafite ----------
+    const interruptor = document.getElementById('interruptor')
+    function pintarInterruptor() {
+      const ligado = interruptor.getAttribute('aria-checked') === 'true'
+      interruptor.classList.toggle('bg-acao', ligado)
+      interruptor.classList.toggle('bg-trilho', !ligado)
+      const bolinha = interruptor.firstElementChild
+      bolinha.classList.toggle('translate-x-[1.375rem]', ligado)
+      bolinha.classList.toggle('translate-x-0.5', !ligado)
+      bolinha.classList.toggle('bg-acao-tinta', ligado)
+      bolinha.classList.toggle('bg-white', !ligado)
+    }
+    interruptor.addEventListener('click', () => {
+      interruptor.setAttribute('aria-checked', String(interruptor.getAttribute('aria-checked') !== 'true'))
+      pintarInterruptor()
+    })
+    pintarInterruptor()
+
+    // ---------- tabela de voos ----------
+    const SITUACAO = {
+      concluido: { rotulo: 'Concluído', icone: 'ok', cor: 'text-ok' },
+      reagendado: { rotulo: 'Reagendado', icone: 'relogio', cor: 'text-atencao' },
+      cancelado: { rotulo: 'Cancelado', icone: 'cancelado', cor: 'text-perigo' },
+    }
+    const VOOS = [
+      ['30/10', 'Fazenda Boa Vista', 'Soja', 186, 'concluido'],
+      ['30/10', 'Agro Três Irmãos', 'Milho', 92, 'concluido'],
+      ['29/10', 'Sítio Santa Luzia', 'Café', 34, 'reagendado'],
+      ['29/10', 'Fazenda Esperança', 'Cana', 248, 'concluido'],
+      ['28/10', 'Cooperativa Vale Verde', 'Soja', 410, 'concluido'],
+      ['28/10', 'Fazenda São José', 'Milho', 120, 'cancelado'],
+    ]
+    document.getElementById('linhas-voos').innerHTML = VOOS.map(([data, cliente, cultura, area, sit]) => {
+      const s = SITUACAO[sit]
+      return `<tr class="border-b border-divisa transition-colors last:border-0 hover:bg-realce">
+        <td class="whitespace-nowrap px-4 py-3 tabular-nums text-tinta-3 lg:pl-5">${esc(data)}</td>
+        <td class="px-4 py-3 font-medium text-tinta">${esc(cliente)}</td>
+        <td class="px-4 py-3 text-tinta-2">${esc(cultura)}</td>
+        <td class="px-4 py-3 text-right tabular-nums text-tinta">${fmt.format(area)}</td>
+        <td class="px-4 py-3 lg:pr-5"><span class="campo inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium text-tinta-2">${svgIcone(s.icone, `h-3.5 w-3.5 ${s.cor}`)}${s.rotulo}</span></td>
+      </tr>`
+    }).join('')
+
+    // ---------- gráficos (SVG à mão; as cores vêm dos tokens, então o tema troca sozinho) ----------
+    const SEMANAS = ['03/08', '10/08', '17/08', '24/08', '31/08', '07/09', '14/09', '21/09', '28/09', '05/10', '12/10', '19/10']
+    const HECTARES = [820, 910, 870, 1040, 980, 1120, 1210, 1150, 1290, 1240, 1360, 1420]
+    const MESES = ['Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out']
+    const CULTURAS = [
+      { nome: 'Soja', cor: 'var(--at-serie-1)', valores: [2100, 1800, 1500, 2600, 3900, 4800] },
+      { nome: 'Milho', cor: 'var(--at-serie-2)', valores: [1400, 1900, 2300, 1700, 1200, 1500] },
+      { nome: 'Cana', cor: 'var(--at-serie-3)', valores: [900, 1000, 1200, 1300, 1250, 1400] },
+      { nome: 'Outras', cor: 'var(--at-serie-contexto)', valores: [300, 350, 280, 420, 380, 460] },
+    ]
+    const TEXTO_EIXO = 'fill: var(--at-tinta-3); font-size: 12px'
+
+    // dica (tooltip) no <body>, posição em coordenadas da tela: à direita do ponto, ou à esquerda se não couber
+    const caixaDica = document.getElementById('dica')
+    function dica(html, x, y) {
+      caixaDica.innerHTML = html
+      caixaDica.hidden = false
+      const largura = caixaDica.offsetWidth
+      const altura = caixaDica.offsetHeight
+      const esquerda = x + 14 + largura > window.innerWidth - 8 ? x - largura - 14 : x + 14
+      caixaDica.style.left = `${Math.max(8, esquerda)}px`
+      caixaDica.style.top = `${Math.min(Math.max(8, y - 24), window.innerHeight - altura - 8)}px`
+    }
+    function esconderDica() { caixaDica.hidden = true }
+    document.querySelector('main').addEventListener('scroll', esconderDica, { passive: true })
+    const linhaDica = (cor, valor, nome) =>
+      `<p class="mt-1 flex items-center gap-2"><span class="inline-block h-0.5 w-3 shrink-0 rounded-full" style="background:${cor}"></span><span class="text-sm font-semibold tabular-nums text-tinta">${valor}</span><span class="text-tinta-3">${esc(nome)}</span></p>`
+
+    function graficoLinha() {
+      const el = document.getElementById('g-linha')
+      if (el.dataset.modo === 'tabela') return
+      const largura = el.getBoundingClientRect().width - parseFloat(getComputedStyle(el).paddingLeft) - parseFloat(getComputedStyle(el).paddingRight)
+      const H = 250
+      const m = { t: 14, r: 70, b: 28, l: 46 }
+      const pw = largura - m.l - m.r
+      const ph = H - m.t - m.b
+      const max = 1500
+      const x = (i) => m.l + (i / (HECTARES.length - 1)) * pw
+      const y = (v) => m.t + ph - (v / max) * ph
+      const passo = Math.max(1, Math.ceil(HECTARES.length / Math.max(2, Math.floor(pw / 62))))
+      let s = `<svg width="${largura}" height="${H}" viewBox="0 0 ${largura} ${H}" role="img" aria-label="Hectares aplicados por semana: de ${fmt.format(HECTARES[0])} a ${fmt.format(HECTARES.at(-1))}" tabindex="0" class="block overflow-visible outline-none">`
+      for (const t of [500, 1000, 1500]) s += `<line x1="${m.l}" x2="${m.l + pw}" y1="${y(t)}" y2="${y(t)}" style="stroke: var(--at-grade)" stroke-width="1"/>`
+      s += `<line x1="${m.l}" x2="${m.l + pw}" y1="${y(0)}" y2="${y(0)}" style="stroke: var(--at-eixo)" stroke-width="1"/>`
+      for (const t of [0, 500, 1000, 1500]) s += `<text x="${m.l - 10}" y="${y(t) + 4}" text-anchor="end" style="${TEXTO_EIXO}" class="tabular-nums">${fmt.format(t)}</text>`
+      HECTARES.forEach((_, i) => { if (i % passo === 0 || i === HECTARES.length - 1) s += `<text x="${x(i)}" y="${H - 8}" text-anchor="middle" style="${TEXTO_EIXO}" class="tabular-nums">${SEMANAS[i]}</text>` })
+      const pontos = HECTARES.map((v, i) => `${x(i)},${y(v)}`)
+      // área: uma lavagem da cor da série que some até a base (nunca um bloco cheio)
+      s += `<defs><linearGradient id="lavagem-linha" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color: var(--at-serie-destaque); stop-opacity: 0.12"/><stop offset="1" style="stop-color: var(--at-serie-destaque); stop-opacity: 0"/></linearGradient></defs>`
+      s += `<path d="M${pontos.join(' L')} L${x(HECTARES.length - 1)},${y(0)} L${x(0)},${y(0)} Z" fill="url(#lavagem-linha)"/>`
+      s += `<polyline points="${pontos.join(' ')}" fill="none" style="stroke: var(--at-serie-destaque)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`
+      const ul = HECTARES.length - 1
+      s += `<circle cx="${x(ul)}" cy="${y(HECTARES[ul])}" r="4" style="fill: var(--at-serie-destaque); stroke: var(--at-grafico-fundo)" stroke-width="2"/>`
+      s += `<text x="${x(ul) + 10}" y="${y(HECTARES[ul]) + 4}" style="fill: var(--at-tinta); font-size: 12px; font-weight: 600" class="tabular-nums">${fmt.format(HECTARES[ul])} ha</text>`
+      s += `<g data-mira hidden><line data-mira-linha y1="${m.t}" y2="${y(0)}" style="stroke: var(--at-eixo)" stroke-width="1"/><circle data-mira-ponto r="4" style="fill: var(--at-serie-destaque); stroke: var(--at-grafico-fundo)" stroke-width="2"/></g>`
+      s += `<rect data-alvo x="${m.l}" y="${m.t}" width="${pw}" height="${ph}" fill="transparent"/></svg>`
+      el.innerHTML = s
+      const svg = el.querySelector('svg')
+      const mira = svg.querySelector('[data-mira]')
+      const mostrar = (i) => {
+        mira.removeAttribute('hidden')
+        mira.querySelector('[data-mira-linha]').setAttribute('x1', x(i))
+        mira.querySelector('[data-mira-linha]').setAttribute('x2', x(i))
+        mira.querySelector('[data-mira-ponto]').setAttribute('cx', x(i))
+        mira.querySelector('[data-mira-ponto]').setAttribute('cy', y(HECTARES[i]))
+        const base = svg.getBoundingClientRect()
+        dica(`<p class="font-medium text-tinta-3">Semana de ${SEMANAS[i]}</p>${linhaDica('var(--at-serie-destaque)', `${fmt.format(HECTARES[i])} ha`, 'aplicados')}`, base.left + x(i), base.top + y(HECTARES[i]))
+      }
+      let atual = ul
+      svg.querySelector('[data-alvo]').addEventListener('pointermove', (e) => {
+        const px = e.clientX - svg.getBoundingClientRect().left
+        atual = Math.min(ul, Math.max(0, Math.round(((px - m.l) / pw) * ul)))
+        mostrar(atual)
+      })
+      svg.addEventListener('pointerleave', () => { mira.setAttribute('hidden', ''); esconderDica() })
+      svg.addEventListener('focus', () => mostrar(atual))
+      svg.addEventListener('blur', () => { mira.setAttribute('hidden', ''); esconderDica() })
+      svg.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') atual = Math.max(0, atual - 1)
+        else if (e.key === 'ArrowRight') atual = Math.min(ul, atual + 1)
+        else return
+        e.preventDefault()
+        mostrar(atual)
+      })
+    }
+
+    function graficoColunas() {
+      const el = document.getElementById('g-colunas')
+      if (el.dataset.modo === 'tabela') return
+      const largura = el.getBoundingClientRect().width - parseFloat(getComputedStyle(el).paddingLeft) - parseFloat(getComputedStyle(el).paddingRight)
+      const H = 226
+      const m = { t: 22, r: 12, b: 28, l: 46 }
+      const pw = largura - m.l - m.r
+      const ph = H - m.t - m.b
+      const max = 9000
+      const banda = pw / MESES.length
+      const larguraBarra = Math.min(24, banda * 0.5)
+      const y = (v) => m.t + ph - (v / max) * ph
+      const altura = (v) => (v / max) * ph
+      const VAO = 2
+      let s = `<svg width="${largura}" height="${H}" viewBox="0 0 ${largura} ${H}" role="img" aria-label="Área por cultura, de maio a outubro" class="block overflow-visible">`
+      for (const t of [3000, 6000, 9000]) s += `<line x1="${m.l}" x2="${m.l + pw}" y1="${y(t)}" y2="${y(t)}" style="stroke: var(--at-grade)" stroke-width="1"/>`
+      for (const t of [0, 3000, 6000, 9000]) s += `<text x="${m.l - 10}" y="${y(t) + 4}" text-anchor="end" style="${TEXTO_EIXO}" class="tabular-nums">${fmt.format(t)}</text>`
+      MESES.forEach((mes, i) => {
+        const cx = m.l + banda * i + banda / 2
+        const x0 = cx - larguraBarra / 2
+        s += `<rect data-banda="${i}" x="${m.l + banda * i}" y="${m.t}" width="${banda}" height="${ph}" rx="8" style="fill: var(--at-realce)" opacity="0"/>`
+        let topo = y(0)
+        CULTURAS.forEach((c, k) => {
+          const h = altura(c.valores[i]) - (k === 0 ? 0 : VAO)
+          const yTopo = topo - h - (k === 0 ? 0 : VAO)
+          const ultimo = k === CULTURAS.length - 1
+          if (ultimo) {
+            const r = Math.min(4, h / 2)
+            s += `<path d="M${x0},${yTopo + h} L${x0},${yTopo + r} Q${x0},${yTopo} ${x0 + r},${yTopo} L${x0 + larguraBarra - r},${yTopo} Q${x0 + larguraBarra},${yTopo} ${x0 + larguraBarra},${yTopo + r} L${x0 + larguraBarra},${yTopo + h} Z" style="fill: ${c.cor}"/>`
+          } else {
+            s += `<rect x="${x0}" y="${yTopo}" width="${larguraBarra}" height="${Math.max(0, h)}" style="fill: ${c.cor}"/>`
+          }
+          topo = yTopo
+        })
+        if (i === MESES.length - 1) {
+          const total = CULTURAS.reduce((a, c) => a + c.valores[i], 0)
+          s += `<text x="${cx}" y="${topo - 8}" text-anchor="middle" style="fill: var(--at-tinta); font-size: 12px; font-weight: 600" class="tabular-nums">${fmt.format(total)}</text>`
+        }
+        s += `<text x="${cx}" y="${H - 8}" text-anchor="middle" style="${TEXTO_EIXO}">${mes}</text>`
+      })
+      s += `<line x1="${m.l}" x2="${m.l + pw}" y1="${y(0)}" y2="${y(0)}" style="stroke: var(--at-eixo)" stroke-width="1"/>`
+      MESES.forEach((_, i) => { s += `<rect data-alvo="${i}" x="${m.l + banda * i}" y="${m.t}" width="${banda}" height="${ph + m.b}" fill="transparent"/>` })
+      s += '</svg>'
+      el.innerHTML = s
+      const svg = el.querySelector('svg')
+      svg.querySelectorAll('[data-alvo]').forEach((alvo) => {
+        alvo.addEventListener('pointerenter', () => {
+          const i = Number(alvo.dataset.alvo)
+          svg.querySelectorAll('[data-banda]').forEach((b) => b.setAttribute('opacity', b.dataset.banda === String(i) ? '1' : '0'))
+          const total = CULTURAS.reduce((a, c) => a + c.valores[i], 0)
+          const base = svg.getBoundingClientRect()
+          const linhas = [...CULTURAS].reverse().map((c) => linhaDica(c.cor, fmt.format(c.valores[i]), c.nome)).join('')
+          dica(`<p class="font-medium text-tinta-3">${MESES[i]} · ${fmt.format(total)} ha</p>${linhas}`, base.left + m.l + banda * i + banda / 2, base.top + m.t + 10)
+        })
+      })
+      svg.addEventListener('pointerleave', () => {
+        svg.querySelectorAll('[data-banda]').forEach((b) => b.setAttribute('opacity', '0'))
+        esconderDica()
+      })
+    }
+
+    document.getElementById('legenda-colunas').innerHTML = CULTURAS.map((c) =>
+      `<li class="flex items-center gap-1.5"><span class="inline-block h-2.5 w-2.5 rounded-[3px]" style="background:${c.cor}"></span>${esc(c.nome)}</li>`).join('')
+
+    // "Tabela": o gêmeo acessível de cada gráfico
+    function tabelaHtml(cabecalho, linhas) {
+      return `<div class="overflow-x-auto rolagem-fina px-2"><table class="w-full text-sm"><thead><tr class="border-b border-divisa">${cabecalho.map((h, i) => `<th scope="col" class="px-3 py-2 text-xs font-semibold text-tinta-3 ${i ? 'text-right' : 'text-left'}">${esc(h)}</th>`).join('')}</tr></thead><tbody>${linhas.map((l) => `<tr class="border-b border-divisa last:border-0">${l.map((c, i) => `<td class="px-3 py-2 ${i ? 'text-right tabular-nums text-tinta' : 'text-tinta-2'}">${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`
+    }
+    const TABELAS = {
+      'g-linha': () => tabelaHtml(['Semana de', 'Hectares'], SEMANAS.map((s, i) => [s, fmt.format(HECTARES[i])])),
+      'g-colunas': () => tabelaHtml(['Mês', ...CULTURAS.map((c) => c.nome)], MESES.map((mes, i) => [mes, ...CULTURAS.map((c) => fmt.format(c.valores[i]))])),
+    }
+    const DESENHAR = { 'g-linha': graficoLinha, 'g-colunas': graficoColunas }
+    document.querySelectorAll('[data-tabela]').forEach((b) => b.addEventListener('click', () => {
+      const id = b.dataset.tabela
+      const el = document.getElementById(id)
+      const virarTabela = el.dataset.modo !== 'tabela'
+      el.dataset.modo = virarTabela ? 'tabela' : 'grafico'
+      b.setAttribute('aria-pressed', String(virarTabela))
+      b.innerHTML = virarTabela ? `${svgIcone('grafico', 'h-3.5 w-3.5')} Gráfico` : `${svgIcone('tabela', 'h-3.5 w-3.5')} Tabela`
+      if (virarTabela) el.innerHTML = TABELAS[id]()
+      else DESENHAR[id]()
+    }))
+
+    // mini tendência dos indicadores: cinza de contexto, ponto atual em grafite
+    function minis() {
+      document.querySelectorAll('svg[data-spark]').forEach((svg) => {
+        const v = JSON.parse(svg.dataset.spark)
+        const W = 80, H = 32, p = 4
+        const mn = Math.min(...v), mx = Math.max(...v)
+        const x = (i) => p + (i / (v.length - 1)) * (W - 2 * p)
+        const y = (n) => H - p - ((n - mn) / (mx - mn || 1)) * (H - 2 * p)
+        svg.setAttribute('viewBox', `0 0 ${W} ${H}`)
+        svg.innerHTML = `<polyline points="${v.map((n, i) => `${x(i)},${y(n)}`).join(' ')}" fill="none" style="stroke: var(--at-serie-contexto)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${x(v.length - 1)}" cy="${y(v.at(-1))}" r="3" style="fill: var(--at-serie-destaque); stroke: var(--at-grafico-fundo)" stroke-width="2"/>`
+      })
+    }
+
+    function desenharTudo() { graficoLinha(); graficoColunas() }
+    trocarIcones()
+    pintarBotaoTema()
+    minis()
+    desenharTudo()
+    new ResizeObserver(() => desenharTudo()).observe(document.querySelector('main'))
+    document.fonts?.ready?.then(desenharTudo)
+  </script>
+</body>
+</html>
