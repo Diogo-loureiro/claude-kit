@@ -11,6 +11,9 @@
   project's CLAUDE.md at it for UI work.
 
 ## Unreleased (template, ships with the next version)
+- Lockfiles below the repo root (e.g. `web/pnpm-lock.yaml` in a pnpm workspace) are now protected:
+  `guard.sh` blocks agent edits to them, and the CI gate requires `deps-approved` when they change.
+  Before, both matched root lockfiles only, so frontend dependency changes skipped the review label.
 - ruff.toml: `max-args` 6 -> 8 (`PLR0913` counts keyword-only arguments too). After updating, stale
   `# noqa: PLR0913` directives are flagged by `RUF100`; remove them with `uv run ruff check --fix .`
   (scforge: 69 directives, all autofixable, nothing else changes).

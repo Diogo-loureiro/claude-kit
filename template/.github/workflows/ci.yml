@@ -50,14 +50,15 @@ jobs:
           harness=$(git diff --name-only "$BASE"...HEAD -- .claude/settings.json .githooks scripts/agent scripts/check \
             .github/workflows .copier-answers.yml biome.json ruff.toml)
           locked=$(git diff --name-status --diff-filter=MDR "$BASE"...HEAD -- tests/acceptance | cut -f2-)
-          deps=$(git diff --name-only "$BASE"...HEAD -- uv.lock package-lock.json pnpm-lock.yaml)
+          deps=$(git diff --name-only "$BASE"...HEAD -- ':(glob)**/uv.lock' ':(glob)**/package-lock.json' \
+            ':(glob)**/pnpm-lock.yaml')
           if [ -n "$harness$locked" ] && [[ ",$LABELS," != *",harness-approved,"* ]]; then
             echo "::error::Harness or approved acceptance tests changed; needs label harness-approved:"
             echo "$harness $locked"; fail=1
           fi
           if [ -n "$deps" ] && [[ ",$LABELS," != *",deps-approved,"* ]]; then
             echo "::error::Dependencies changed; review them and add label deps-approved:"
-            git diff "$BASE"...HEAD -- pyproject.toml package.json | grep -E '^[+-] ' || true
+            git diff "$BASE"...HEAD -- ':(glob)**/pyproject.toml' ':(glob)**/package.json' | grep -E '^[+-] ' || true
             fail=1
           fi
           exit $fail
