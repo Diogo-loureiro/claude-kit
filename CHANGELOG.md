@@ -10,6 +10,11 @@
   Portuguese) with its `exemplo.html` reference page. Manual-only (`disable-model-invocation`); point a
   project's CLAUDE.md at it for UI work.
 
+## Unreleased (template, ships with the next version)
+- ruff.toml: `max-args` 6 -> 8 (`PLR0913` counts keyword-only arguments too). After updating, stale
+  `# noqa: PLR0913` directives are flagged by `RUF100`; remove them with `uv run ruff check --fix .`
+  (scforge: 69 directives, all autofixable, nothing else changes).
+
 ## v0.1.5 (2026-11-01)
 - CI `security` job, report-only: OSV-Scanner (known vulnerabilities in lockfiles) and Semgrep CE
   (code) write their findings to the job summary and never fail the build (#6).

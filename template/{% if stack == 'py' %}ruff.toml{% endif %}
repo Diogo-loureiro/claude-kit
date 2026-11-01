@@ -14,7 +14,8 @@ max-complexity = 10
 
 [lint.pylint]
 max-statements = 50
-max-args = 6
+# Keyword-only arguments count too; 6 forced artificial parameter objects (scforge: 111 noqa).
+max-args = 8
 
 [lint.per-file-ignores]
 "tests/**" = ["S101", "PLR2004"]
