@@ -23,6 +23,8 @@ expect 0 "guard allows .env.example" edit .env.example
 expect 2 "guard blocks scripts/check" edit scripts/check
 expect 2 "guard blocks CI workflows" edit .github/workflows/ci.yml
 expect 0 "guard allows source files" edit src/app.py
+expect 2 "guard blocks a root lockfile" edit uv.lock
+expect 2 "guard blocks a nested lockfile" edit web/pnpm-lock.yaml
 expect 0 "guard allows drafting a new acceptance test" edit tests/acceptance/test_new.py
 expect 2 "guard blocks a committed acceptance test" edit tests/acceptance/README.md
 expect 0 "KIT_UNLOCK overrides guard" env KIT_UNLOCK=1 bash -c "$(declare -f edit); edit .env"

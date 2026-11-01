@@ -20,7 +20,8 @@ case "$rel" in
   .claude/settings.json | .githooks/* | scripts/agent/* | scripts/check | .github/workflows/* | .copier-answers.yml)
     deny "is part of the harness (change it in claude-kit)" ;;
   biome.json | ruff.toml) deny "is lint config: fix the code, not the rule" ;;
-  package-lock.json | pnpm-lock.yaml | uv.lock) deny "is a lockfile: use the package manager" ;;
+  package-lock.json | pnpm-lock.yaml | uv.lock | */package-lock.json | */pnpm-lock.yaml | */uv.lock)
+    deny "is a lockfile: use the package manager" ;;
   tests/acceptance/*)
     # Drafting new acceptance tests is fine; once committed they are approved and locked.
     if git -C "$root" ls-files --error-unmatch -- "$rel" >/dev/null 2>&1; then
