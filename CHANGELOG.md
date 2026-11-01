@@ -10,7 +10,7 @@
   Portuguese) with its `exemplo.html` reference page. Manual-only (`disable-model-invocation`); point a
   project's CLAUDE.md at it for UI work.
 
-## Unreleased (template, ships with the next version)
+## v0.1.6 (2026-11-01)
 - Lockfiles below the repo root (e.g. `web/pnpm-lock.yaml` in a pnpm workspace) are now protected:
   `guard.sh` blocks agent edits to them, and the CI gate requires `deps-approved` when they change.
   Before, both matched root lockfiles only, so frontend dependency changes skipped the review label.
